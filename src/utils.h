@@ -1,8 +1,8 @@
 #ifndef SRC_UTILS
 #define SRC_UTILS
 
-#define DEBUG false
-#define DEBUG_RATIO 360
+#include <Arduino.h>
+#include "config.h"
 
 #define OFF 0
 #define ON 1
@@ -32,5 +32,39 @@ typedef struct Actions
     int pump;
     int resistance;
 } Actions;
+
+typedef struct Buzzer
+{
+    byte initialized;
+
+    int frequency;
+    int duration;
+
+    Buzzer() : initialized(0){};
+
+    void init()
+    {
+        if (initialized)
+            return;
+
+        pinMode(BUZZER_PIN, OUTPUT);
+
+        frequency = 1000;
+        duration = 100;
+
+        initialized = 1;
+    }
+
+    void play(int times)
+    {
+        init();
+
+        for (int i = 0; i < times; i++)
+        {
+            tone(BUZZER_PIN, frequency, duration);
+            delay(duration);
+        }
+    }
+} Buzzer;
 
 #endif /* SRC_UTILS */

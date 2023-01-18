@@ -14,6 +14,8 @@ private:
     String name;
     unsigned long duration;
 
+    static Buzzer buzzer;
+
     friend class Cycle;
     friend class Term;
 };

@@ -1,12 +1,15 @@
 #include "Cycle.h"
+#include "utils.h"
 
 Cycle::Cycle(String name, size_t num_terms, Term *terms)
     : Event(name, Duration(0)), terms(terms), num_terms(num_terms), current_term(0),
-      state(nullptr), handler(ActionHandler()), start_condition(false) {}
+      state(nullptr), handler(ActionHandler()), start_condition(false),
+      start_condition_message_displayed(MESSAGE_NOT_DISPLAYED) {}
 
 Cycle::Cycle(String name, size_t num_terms, Term *terms, bool start_condition)
     : Event(name, Duration(0)), terms(terms), num_terms(num_terms), current_term(0),
-      state(nullptr), handler(ActionHandler()), start_condition(start_condition) {}
+      state(nullptr), handler(ActionHandler()), start_condition(start_condition),
+      start_condition_message_displayed(MESSAGE_NOT_DISPLAYED) {}
 
 bool Cycle::is_running()
 {
@@ -22,7 +25,7 @@ void Cycle::init()
         duration += terms[i].duration;
     }
 
-    Serial.println(get_name() + " started.");
+    Serial.println(get_name() + " started. (duration: " + String(duration / 1000) + " seconds)");
 }
 
 int Cycle::terminate()
@@ -31,12 +34,23 @@ int Cycle::terminate()
     current_term = 0;
     duration = 0ul;
 
+    // Play a beep to indicate that the cycle is finished
+    buzzer.play(CYCLE_BEEP_AMOUNT);
     Serial.println(get_name() + " finished.");
+
     return 0;
 }
 
 int Cycle::verify_start_condition()
 {
+
+    // if the start condition message has not been displayed, we display it
+    if (start_condition_message_displayed == MESSAGE_NOT_DISPLAYED)
+    {
+        Serial.println("Waiting for start condition to be met... (MAX_TEMPERATURE)");
+        start_condition_message_displayed = MESSAGE_DISPLAYED;
+    }
+
     // if temperature is higher than MAX_TEMPERATURE
     // we set the start_condition to false
     // i.e the cycle starts
@@ -44,7 +58,7 @@ int Cycle::verify_start_condition()
     {
         start_condition = false;
         Serial.println("Start condition met.");
-        Serial.println("Starting " + get_name() + ".");
+        Serial.println("Starting " + get_name() + "."); // Note: get_name() is a method of the Event class
 
         return 1;
     }

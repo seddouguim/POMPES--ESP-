@@ -5,6 +5,7 @@
 #include "State.h"
 #include "Cycle.h"
 #include "Network.h"
+#include "Display.h"
 
 class Manager
 {
@@ -19,6 +20,7 @@ private:
 
     State state;
     Network network;
+    Display display;
 
     bool is_running();
 

@@ -24,9 +24,16 @@ Term V_40_TERMS[] = {
     Term("term 3", Duration{0, 45, 0}, Actions{.pump = OFF, .resistance = OFF}),
 };
 
+// Term TEST_TERMS[] = {
+//     Term("term 1", Duration{0, 0, 10}, Actions{.pump = ON, .resistance = ON}),
+//     Term("term 2", Duration{0, 0, 10}, Actions{.pump = ON, .resistance = ON}),
+//     Term("term 3", Duration{0, 0, 10}, Actions{.pump = OFF, .resistance = OFF}),
+// };
+
 // We define the cycles
 Cycle CYCLES[] = {
-    Cycle("IDLING Cycle", 3, IDLING_TERMS, true),
+    // Cycle("TEST Cycle", 3, TEST_TERMS),
+    Cycle("IDLING Cycle", 3, IDLING_TERMS, true), // We set the start condition to true
     Cycle("DRAINING Cycle", 2, IDLING_TERMS),
     Cycle("V_40 Cycle", 3, V_40_TERMS),
 };

@@ -33,6 +33,7 @@ private:
     // When the condition is met, start_conndition is set to false
     bool start_condition;
     int verify_start_condition();
+    byte start_condition_message_displayed;
 
     void init();
     bool is_running();

@@ -4,8 +4,8 @@ Network::Network()
     : initialized(false), state(nullptr), wifi_client(), mqtt_client(wifi_client),
       cert(AWS_CERT_CA), client_crt(AWS_CERT_CRT), key(AWS_CERT_PRIVATE)
 {
-    WIFI_ssid = "UPC3404214";
-    WIFI_password = "Y66aedjtudhw";
+    WIFI_ssid = "UPC2703909";
+    WIFI_password = "nxkVF7ksvt8j";
 
     THING_NAME = "ESP8266";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";

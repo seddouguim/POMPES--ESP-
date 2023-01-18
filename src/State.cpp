@@ -25,16 +25,16 @@ void State::init()
     pinMode(RESISTANCE_PIN, OUTPUT);
     pinMode(PUMP_PIN, OUTPUT);
 
-    // Make sure the pump and the resistance are off
-    digitalWrite(RESISTANCE_PIN, LOW);
+    // Make sure the pump is OFF and the resistance is ON
+    digitalWrite(RESISTANCE_PIN, HIGH);
     digitalWrite(PUMP_PIN, LOW);
 }
 
 void State::update()
 {
     previous_temperature = current_temperature;
-    current_temperature = Thermocouple.readCelsius();
-    // current_temperature += 5;
+    // current_temperature = Thermocouple.readCelsius();
+    current_temperature += 5;
 
     previous_resistance_state = resistance_state;
     resistance_state = digitalRead(RESISTANCE_PIN);

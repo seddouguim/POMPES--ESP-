@@ -2,7 +2,7 @@
 
 Manager::Manager(size_t num_cycles, Cycle *cycles)
     : num_cycles(num_cycles), cycles(cycles),
-      current_cycle(0), state(State()), network(Network()) {}
+      current_cycle(0), state(State()), network(Network()), display(Display()) {}
 
 bool Manager::is_running()
 {
@@ -19,7 +19,7 @@ void Manager::run()
     state.update();
 
     // Update the display
-    display.update(&state);
+    // display.update(&state);
 
     // Run network loop
     network.loop(&state);
@@ -29,7 +29,7 @@ void Manager::run()
     // If the cycle is finished, we move to the next cycle
     if (cycles[current_cycle].run(&state) == 0)
     {
+        Serial.println("Cycle finished");
         current_cycle++;
-        // TODO: add a buzzer to signal the end of a cycle
     }
 }

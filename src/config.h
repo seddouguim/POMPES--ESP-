@@ -3,8 +3,12 @@
 
 #include <Arduino.h>
 
+// DEBUG
+#define DEBUG true
+#define DEBUG_RATIO 360
+
 // ESP PINS
-#define BUZZER_PIN 13
+#define BUZZER_PIN 14
 #define RESISTANCE_PIN 5
 #define PUMP_PIN 4
 
@@ -26,5 +30,12 @@ extern float PUMP_OFF;
 
 #define RESISTANCE_OFF_PIC 81
 #define PUMP_OFF_PIC 80
+
+// MISCELLANEOUS
+#define MESSAGE_NOT_DISPLAYED 0
+#define MESSAGE_DISPLAYED 1
+
+#define CYCLE_BEEP_AMOUNT 3
+#define TERM_BEEP_AMOUNT 1
 
 #endif /* SRC_CONFIG */

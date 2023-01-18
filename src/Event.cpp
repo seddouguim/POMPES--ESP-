@@ -9,3 +9,5 @@ String Event::get_name()
 {
     return name;
 }
+
+Buzzer Event::buzzer = Buzzer();
