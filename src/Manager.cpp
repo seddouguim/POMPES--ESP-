@@ -2,7 +2,7 @@
 
 Manager::Manager(size_t num_cycles, Cycle *cycles)
     : num_cycles(num_cycles), cycles(cycles),
-      current_cycle(0), state(State()), network(Network()), display(Display()) {}
+      current_cycle(0), state(State()), network(Network()) {}
 
 bool Manager::is_running()
 {
@@ -17,9 +17,6 @@ void Manager::run()
 
     // At each iteration, we update the state
     state.update();
-
-    // Update the display
-    // display.update(&state);
 
     // Run network loop
     network.loop(&state);
