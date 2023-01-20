@@ -7,15 +7,19 @@
 #define DEBUG true
 #define DEBUG_RATIO 360
 
+// NETWORK
+#define WIFI_SSID "UPC2703909"
+#define WIFI_PASSWORD "nxkVF7ksvt8j"
+
 // ESP PINS
-#define BUZZER_PIN 14
+#define BUZZER_PIN 13
 #define RESISTANCE_PIN 5
 #define PUMP_PIN 4
 
 // THERMOCOUPLE PINS
 #define CLK 14
 #define CS 15
-#define MISO 12
+#define MISO 12 // DO
 
 // TEMPERATURE VARIABLES
 extern float MIN_TEMPERATURE;
@@ -30,6 +34,8 @@ extern float PUMP_OFF;
 
 #define RESISTANCE_OFF_PIC 81
 #define PUMP_OFF_PIC 80
+
+#define Screen Serial1
 
 // MISCELLANEOUS
 #define MESSAGE_NOT_DISPLAYED 0

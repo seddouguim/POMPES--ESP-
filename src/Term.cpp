@@ -11,6 +11,8 @@ void Term::init()
     // We compute the term's end time
     end_time = millis() + duration;
 
+    // Play a beep to indicate that the term starts
+    buzzer.play(TERM_BEEP_AMOUNT);
     Serial.println(get_name() + " started. (duration: " + String(duration / 1000) + " seconds)");
 }
 
@@ -25,10 +27,7 @@ bool Term::terminate()
     // We re-initialize the term
     end_time = 0;
 
-    // Play a beep to indicate that the term is finished
-    buzzer.play(TERM_BEEP_AMOUNT);
     Serial.println(get_name() + " finished.");
-
     return false;
 }
 

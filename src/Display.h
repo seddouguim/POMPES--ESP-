@@ -13,11 +13,9 @@ private:
     // Reference to State
     State *state;
 
-    // Display Related
-    void init();
-    void update_temperature();
     void update_resistance();
     void update_pump();
+    void update_temperature();
 };
 
 #endif /* SRC_DISPLAY */

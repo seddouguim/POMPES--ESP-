@@ -18,6 +18,9 @@ void Manager::run()
     // At each iteration, we update the state
     state.update();
 
+    // We update the display
+    display.update(&state);
+
     // Run network loop
     network.loop(&state);
 

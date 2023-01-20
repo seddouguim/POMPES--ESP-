@@ -10,6 +10,9 @@ class State
 public:
     State();
     void update();
+    bool get_temperature_update();
+    bool get_resistance_update();
+    bool get_pump_update();
 
 private:
     Adafruit_MAX31855 Thermocouple;
@@ -29,6 +32,7 @@ private:
     friend class Manager;
     friend class ActionHandler;
     friend class Network;
+    friend class Display;
 };
 
 #endif /* SRC_STATE */

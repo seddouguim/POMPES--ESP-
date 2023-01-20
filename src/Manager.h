@@ -20,6 +20,7 @@ private:
 
     State state;
     Network network;
+    Display display;
 
     bool is_running();
 

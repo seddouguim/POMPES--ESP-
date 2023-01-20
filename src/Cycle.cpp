@@ -25,7 +25,9 @@ void Cycle::init()
         duration += terms[i].duration;
     }
 
-    Serial.println(get_name() + " started. (duration: " + String(duration / 1000) + " seconds)");
+    // Play a beep to indicate that the cycle starts
+    buzzer.play(CYCLE_BEEP_AMOUNT);
+    Serial.println(this->get_name() + " started. (duration: " + String(duration / 1000) + " seconds)");
 }
 
 int Cycle::terminate()
@@ -34,9 +36,7 @@ int Cycle::terminate()
     current_term = 0;
     duration = 0ul;
 
-    // Play a beep to indicate that the cycle is finished
-    buzzer.play(CYCLE_BEEP_AMOUNT);
-    Serial.println(get_name() + " finished.");
+    Serial.println(this->get_name() + " finished.");
 
     return 0;
 }

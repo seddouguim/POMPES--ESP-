@@ -42,3 +42,20 @@ void State::update()
     previous_pump_state = pump_state;
     pump_state = digitalRead(PUMP_PIN);
 }
+
+// GET_UPATE FUNCTIONS
+// RETURN TRUE IF EACH PREVIOUS STATE IS DIFFERENT FROM CURRENT STATE
+bool State::get_temperature_update()
+{
+    return current_temperature != previous_temperature;
+}
+
+bool State::get_resistance_update()
+{
+    return resistance_state != previous_resistance_state;
+}
+
+bool State::get_pump_update()
+{
+    return pump_state != previous_pump_state;
+}

@@ -24,18 +24,11 @@ Term V_40_TERMS[] = {
     Term("term 3", Duration{0, 45, 0}, Actions{.pump = OFF, .resistance = OFF}),
 };
 
-// Term TEST_TERMS[] = {
-//     Term("term 1", Duration{0, 0, 10}, Actions{.pump = ON, .resistance = ON}),
-//     Term("term 2", Duration{0, 0, 10}, Actions{.pump = ON, .resistance = ON}),
-//     Term("term 3", Duration{0, 0, 10}, Actions{.pump = OFF, .resistance = OFF}),
-// };
-
 // We define the cycles
 Cycle CYCLES[] = {
-    // Cycle("TEST Cycle", 3, TEST_TERMS),
     Cycle("IDLING Cycle", 3, IDLING_TERMS, true), // We set the start condition to true
     Cycle("DRAINING Cycle", 2, IDLING_TERMS),
-    Cycle("V_40 Cycle", 3, V_40_TERMS),
+    Cycle("V40 Cycle", 3, V_40_TERMS),
 };
 
 // We define the manager
@@ -44,6 +37,7 @@ Manager CycleManager(3, CYCLES);
 void setup()
 {
   Serial.begin(115200);
+  Serial1.begin(115200);
   delay(1000);
   Serial.println();
 }
