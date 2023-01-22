@@ -1,12 +1,17 @@
 #include "Display.h"
 
-Display::Display() : state(nullptr) {}
+Display::Display() : state(nullptr), last_update(0ul) {}
 
 void Display::update(State *state)
 {
 
     if (this->state == nullptr)
         this->state = state;
+
+    if (millis() - last_update < 1000)
+        return;
+
+    last_update = millis();
 
     update_resistance();
     update_pump();

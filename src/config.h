@@ -18,7 +18,7 @@
 
 // THERMOCOUPLE PINS
 #define CLK 14
-#define CS 15
+#define CS 0
 #define MISO 12 // DO
 
 // TEMPERATURE VARIABLES

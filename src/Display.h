@@ -13,6 +13,8 @@ private:
     // Reference to State
     State *state;
 
+    unsigned long last_update;
+
     void update_resistance();
     void update_pump();
     void update_temperature();
