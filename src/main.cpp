@@ -26,7 +26,7 @@ Term V_40_TERMS[] = {
 
 // We define the cycles
 Cycle CYCLES[] = {
-    Cycle("IDLING Cycle", 3, IDLING_TERMS, true), // We set the start condition to true
+    Cycle("IDLING Cycle", 3, IDLING_TERMS, false), // We set the start condition to true
     Cycle("DRAINING Cycle", 2, IDLING_TERMS),
     Cycle("V40 Cycle", 3, V_40_TERMS),
 };

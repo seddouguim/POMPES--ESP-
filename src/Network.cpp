@@ -10,9 +10,6 @@ Network::Network()
     THING_NAME = "ESP8266";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";
 
-    AWS_IOT_PUBLISH_TOPIC = "dt/sensors/" + String(cuid);
-    AWS_IOT_SUBSCRIBE_TOPIC = "dt/sensors/" + String(cuid) + "/sub";
-
     now = 0;
     nowish = 1510592825;
     TIME_ZONE = -5;
@@ -30,6 +27,9 @@ void Network::init()
     wifi_client.setClientRSACert(&client_crt, &key);
 
     mqtt_client.setServer(MQTT_HOST.c_str(), 8883);
+
+    AWS_IOT_PUBLISH_TOPIC = "dt/sensors/" + String(state->CUID);
+    AWS_IOT_SUBSCRIBE_TOPIC = "dt/sensors/" + String(state->CUID) + "/sub";
 
     initialized = true;
 }
@@ -50,7 +50,7 @@ void Network::get_time(void)
     gmtime_r(&now, &timeinfo);
 
     Serial.println();
-    Serial.print("Current time: " + String(asctime(&timeinfo)) + " (AMAZON)");
+    Serial.print("Current time: " + String(asctime(&timeinfo)));
 }
 
 void Network::connect_wifi()
@@ -106,24 +106,14 @@ void Network::connect_mqtt()
 void Network::publish_message()
 {
     // Check if time to publish
-    if (millis() - last_publish_time < 5000)
+    if (millis() - last_publish_time < MQTT_PUBLISH_INTERVAL)
         return;
 
-    // Publish a message
+    // Publish an MQTT message
+    mqtt_client.publish(AWS_IOT_PUBLISH_TOPIC.c_str(), state->get_state_json());
+
+    Serial.println("Published to: " + AWS_IOT_PUBLISH_TOPIC);
     last_publish_time = millis();
-
-    StaticJsonDocument<200> doc;
-
-    doc["time"] = millis();
-    doc["device_id"] = String(cuid);
-    doc["current_temperature"] = state->current_temperature;
-    doc["resistance_state"] = state->resistance_state;
-    doc["pump_state"] = state->pump_state;
-
-    char jsonBuffer[512];
-    serializeJson(doc, jsonBuffer);
-
-    mqtt_client.publish(AWS_IOT_PUBLISH_TOPIC.c_str(), jsonBuffer);
 }
 
 void Network::loop(State *state)
@@ -134,6 +124,11 @@ void Network::loop(State *state)
         this->state = state;
 
     connect_wifi();
+
+    // Check if we're connected to WiFi
+    // If we're not, we return
+    if (WiFi.status() != WL_CONNECTED)
+        return;
 
     init();
 

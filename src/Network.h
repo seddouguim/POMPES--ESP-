@@ -9,8 +9,6 @@
 #include "State.h"
 #include "secrets.h"
 
-#define cuid "claay207y00083b6qint7umkc"
-
 class Network
 {
 public:

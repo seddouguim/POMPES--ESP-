@@ -10,6 +10,7 @@
 // NETWORK
 #define WIFI_SSID "UPC2703909"
 #define WIFI_PASSWORD "nxkVF7ksvt8j"
+#define MQTT_PUBLISH_INTERVAL 1000
 
 // ESP PINS
 #define BUZZER_PIN 13
@@ -27,6 +28,10 @@ extern float MAX_TEMPERATURE;
 extern float PUMP_ON;
 extern float PUMP_OFF;
 
+// ENERGY CONSUMPTION VARIABLES
+extern float RESISTANCE_CONSUMPTION;
+extern float PUMP_CONSUMPTION;
+
 // SCREEN VARIABLES
 #define GREEN 960
 #define RED 47169
@@ -43,5 +48,7 @@ extern float PUMP_OFF;
 
 #define CYCLE_BEEP_AMOUNT 3
 #define TERM_BEEP_AMOUNT 1
+
+#define JSON_BUFFER_SIZE 512
 
 #endif /* SRC_CONFIG */
