@@ -12,6 +12,7 @@ public:
     State();
     void update();
     char *get_state_json();
+    StaticJsonDocument<200> *get_state_doc();
 
     bool get_temperature_update();
     bool get_resistance_update();

@@ -8,6 +8,7 @@
 #include <time.h>
 #include "State.h"
 #include "secrets.h"
+#include "InternalServer.h"
 
 class Network
 {
@@ -28,6 +29,8 @@ private:
     void connect_wifi();
     void connect_mqtt();
 
+    InternalServer server;
+
     // Network Related
     WiFiClientSecure wifi_client;
     PubSubClient mqtt_client;
@@ -41,8 +44,14 @@ private:
     String MQTT_HOST;
     String AWS_IOT_PUBLISH_TOPIC;
     String AWS_IOT_SUBSCRIBE_TOPIC;
-    void publish_message();
-    unsigned long last_publish_time;
+
+    void publish_messages();
+
+    void publish_live_data_message();
+    void publish_database_message();
+
+    unsigned long last_live_publish_time;
+    unsigned long last_database_publish_time;
 
     // TIME RELATED
     time_t now;

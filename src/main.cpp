@@ -4,6 +4,7 @@
 #include "Manager.h"
 #include "Cycle.h"
 #include "Term.h"
+#include "LittleFS.h"
 #include "utils.h"
 
 // We define the terms
@@ -38,7 +39,11 @@ void setup()
 {
   Serial.begin(115200);
   Serial1.begin(115200);
+
   delay(1000);
+
+  LittleFS.begin();
+
   Serial.println();
 }
 
