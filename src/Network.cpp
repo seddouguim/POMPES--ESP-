@@ -13,6 +13,8 @@ Network::Network()
     THING_NAME = "ESP8266";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";
 
+    SHADOW_UPDATE_TOPIC = "$aws/things/" + THING_NAME + "/shadow/update";
+
     now = 0;
     nowish = 1510592825;
     TIME_ZONE = -5;

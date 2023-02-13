@@ -45,6 +45,8 @@ private:
     String AWS_IOT_PUBLISH_TOPIC;
     String AWS_IOT_SUBSCRIBE_TOPIC;
 
+    String SHADOW_UPDATE_TOPIC;
+
     void publish_messages();
 
     void publish_live_data_message();
