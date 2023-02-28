@@ -3,10 +3,10 @@ const { Client } = require("pg");
 exports.handler = async (event, context) => {
   // Connect to the PostgreSQL database
   const client = new Client({
-    host: "iot-db-test.cwdqx89aqat4.us-east-1.rds.amazonaws.com",
+    host: "iot-data.cwdqx89aqat4.us-east-1.rds.amazonaws.com",
     user: "postgres",
     password: "medsed00",
-    database: "data",
+    database: "iot-data",
     port: "5432",
   });
 
@@ -18,7 +18,7 @@ exports.handler = async (event, context) => {
 
   // Insert the data into the PostgreSQL database
   await client.query(
-    "INSERT INTO sensor_data(device_id, temperature, pump_state, resistance_state, pump_kwh, resistance_kwh, pump_on_time, resistance_on_time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+    'INSERT INTO "DeviceData" (device_id, current_temperature, pump_state, resistance_state, pump_kwh, resistance_kwh, pump_on_time_total, resistance_on_time_total) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
     [
       payload.device_id,
       payload.current_temperature,

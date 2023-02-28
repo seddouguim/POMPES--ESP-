@@ -15,6 +15,8 @@ private:
 
     unsigned long last_update;
 
+    String command;
+
     void update_resistance();
     void update_pump();
     void update_temperature();

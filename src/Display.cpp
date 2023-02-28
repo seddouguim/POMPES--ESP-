@@ -1,6 +1,6 @@
 #include "Display.h"
 
-Display::Display() : state(nullptr), last_update(0ul) {}
+Display::Display() : state(nullptr), last_update(0ul), command("") {}
 
 void Display::update(State *state)
 {
@@ -16,99 +16,140 @@ void Display::update(State *state)
     update_resistance();
     update_pump();
     update_temperature();
+
+    Serial.println("Sending updates to display...");
 }
 
 void Display::update_resistance()
 {
     if (!state->get_resistance_update())
-        return;
+    {
+        Serial.println("Resistance update not needed.");
+    }
 
     if (state->resistance_state == HIGH)
     {
-        // Enables the animated fire picture
-        Screen.print("page0.resTimer.en=1");
-        Screen.write(0xff);
-        Screen.write(0xff);
-        Screen.write(0xff);
+        Serial.println("Updating resistance state to ON.");
 
-        Screen.print("page0.resStatus.txt=\"ON\"");
+        command = "page0.resTimer.en=1";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
-        Screen.print("page0.resStatus.pco=" + String(GREEN));
+        command = "page0.resStatus.txt=\"ON\"";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
+
+        command = "page0.resStatus.pco=" + String(GREEN);
+        Screen.print(command);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Serial.println("Command sent: " + command);
     }
     else
     {
-        // Disables the animated fire picture
-        Screen.print("page0.resTimer.en=0");
-        Screen.write(0xff);
-        Screen.write(0xff);
-        Screen.write(0xff);
+        Serial.println("Updating resistance state to OFF.");
 
-        Screen.print("page0.fire.pic=" + String(RESISTANCE_OFF_PIC));
+        command = "page0.resTimer.en=0";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
-        Screen.print("page0.resStatus.txt=\"OFF\"");
+        command = "page0.res.pic=" + String(RESISTANCE_OFF_PIC);
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
-        Screen.print("page0.resStatus.pco=" + String(RED));
+        command = "page0.resStatus.txt=\"OFF\"";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
+
+        command = "page0.resStatus.pco=" + String(RED);
+        Screen.print(command);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Serial.println("Command sent: " + command);
     }
 }
 
 void Display::update_pump()
 {
     if (!state->get_pump_update())
+    {
+        Serial.println("Pump update not needed.");
         return;
+    }
 
     if (state->pump_state == HIGH)
     {
-        Screen.print("page0.pumpTimer.en=1");
-        Screen.write(0xff);
-        Screen.write(0xff);
-        Screen.write(0xff);
+        Serial.println("Updating pump state to ON.");
 
-        Screen.print("page0.pumpStatus.txt=\"ON\"");
+        command = "page0.pumpTimer.en=1";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
-        Screen.print("page0.pumpStatus.pco=" + String(GREEN));
+        command = "page0.pumpStatus.txt=\"ON\"";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
+
+        command = "page0.pumpStatus.pco=" + String(GREEN);
+        Screen.print(command);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Serial.println("Command sent: " + command);
     }
     else
     {
-        Screen.print("page0.pumpTimer.en=0");
-        Screen.write(0xff);
-        Screen.write(0xff);
-        Screen.write(0xff);
+        Serial.println("Updating pump state to OFF.");
 
-        Screen.print("page0.pump.pic=" + String(PUMP_OFF_PIC));
+        command = "page0.pumpTimer.en=0";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
-        Screen.print("page0.pumpStatus.txt=\"OFF\"");
+        command = "page0.pump.pic=" + String(PUMP_OFF_PIC);
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
-        Screen.print("page0.pumpStatus.pco=" + String(RED));
+        command = "page0.pumpStatus.txt=\"OFF\"";
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
+
+        command = "page0.pumpStatus.pco=" + String(RED);
+        Screen.print(command);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Screen.write(0xff);
+        Serial.println("Command sent: " + command);
     }
 }
 
@@ -117,10 +158,14 @@ void Display::update_temperature()
 
     if (!state->get_temperature_update())
     {
-        Screen.print("page0.tempDisplay.pco=" + String(GREEN));
+        Serial.println("Temperature update not needed.");
+        Serial.println("Changing temperature display to green.");
+        command = "page0.tempDisplay.pco=" + String(GREEN);
+        Screen.print(command);
         Screen.write(0xff);
         Screen.write(0xff);
         Screen.write(0xff);
+        Serial.println("Command sent: " + command);
 
         Screen.print("vis page0.arrow,0");
         Screen.write(0xff);
@@ -131,10 +176,15 @@ void Display::update_temperature()
     }
 
     // NEED TO UPDATE TEMPERATURE
-    Screen.print("page0.tempDisplay.txt=\"" + String(state->current_temperature, 1) + char(176) + "\"");
+
+    Serial.println("Updating temperature display...");
+
+    command = "page0.tempDisplay.txt=\"" + String(state->current_temperature, 1) + char(176) + "\"";
+    Screen.print(command);
     Screen.write(0xff);
     Screen.write(0xff);
     Screen.write(0xff);
+    Serial.println("Command sent: " + command);
 
     float temperatureTrend = state->current_temperature - state->previous_temperature;
 

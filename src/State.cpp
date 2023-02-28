@@ -42,14 +42,24 @@ void State::init()
 void State::update()
 {
     previous_temperature = current_temperature;
-    current_temperature = Thermocouple.readCelsius();
-    // current_temperature += 5;
+    current_temperature = Thermocouple.readCelsius() || 0;
+    // current_temperature = random(10, 100);
 
     previous_resistance_state = resistance_state;
     resistance_state = digitalRead(RESISTANCE_PIN);
 
     previous_pump_state = pump_state;
     pump_state = digitalRead(PUMP_PIN);
+
+    if (resistance_state == HIGH)
+        resistance_kwh = RESISTANCE_CONSUMPTION / 1000;
+    else
+        resistance_kwh = 0;
+
+    if (pump_state == HIGH)
+        pump_kwh = PUMP_CONSUMPTION / 1000;
+    else
+        pump_kwh = 0;
 
     calculate_kws();
 }
@@ -71,6 +81,22 @@ char *State::get_state_json()
     serializeJson(doc, state_json);
 
     return state_json;
+}
+
+char *State::get_shadow_update_document()
+{
+    StaticJsonDocument<200> doc;
+
+    doc["state"]["reported"]["current_temperature"] = current_temperature;
+    doc["state"]["reported"]["resistance_state"] = resistance_state;
+    doc["state"]["reported"]["pump_state"] = pump_state;
+    doc["state"]["reported"]["pump_kwh"] = pump_kwh;
+    doc["state"]["reported"]["resistance_kwh"] = resistance_kwh;
+
+    static char shadow_update_document[JSON_BUFFER_SIZE];
+    serializeJson(doc, shadow_update_document);
+
+    return shadow_update_document;
 }
 
 void State::calculate_kws()

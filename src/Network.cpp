@@ -4,11 +4,11 @@ Network::Network()
     : initialized(false), state(nullptr), server(), wifi_client(), mqtt_client(wifi_client),
       cert(AWS_CERT_CA), client_crt(AWS_CERT_CRT), key(AWS_CERT_PRIVATE)
 {
-    // WIFI_ssid = WIFI_SSID;
-    // WIFI_password = WIFI_PASSWORD;
+    WIFI_ssid = WIFI_SSID;
+    WIFI_password = WIFI_PASSWORD;
 
-    WIFI_ssid = "";
-    WIFI_password = "";
+    // WIFI_ssid = "";
+    // WIFI_password = "";
 
     THING_NAME = "ESP8266";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";
@@ -38,14 +38,14 @@ void Network::init()
 
     // Get wifi credentials from file (if they exist)
 
-    File file = LittleFS.open("/wifi/config.txt", "r");
-    if (file)
-    {
-        Serial.println("Reading wifi credentials from file.");
-        WIFI_ssid = file.readStringUntil('\n');
-        WIFI_password = file.readStringUntil('\n');
-        file.close();
-    }
+    // File file = LittleFS.open("/wifi/config.txt", "r");
+    // if (file)
+    // {
+    //     Serial.println("Reading wifi credentials from file.");
+    //     WIFI_ssid = file.readStringUntil('\n');
+    //     WIFI_password = file.readStringUntil('\n');
+    //     file.close();
+    // }
 
     initialized = true;
 }
@@ -128,10 +128,12 @@ void Network::publish_live_data_message()
     if (millis() - last_live_publish_time < MQTT_PUBLISH_INTERVAL)
         return;
 
-    // Publish an MQTT message for live data feed
-    mqtt_client.publish(AWS_IOT_PUBLISH_TOPIC.c_str(), state->get_state_json());
+    // Publish an MQTT message to the device's update shadow topic
+    // This will update the device's shadow document with the current state
 
-    Serial.println("Published to: " + AWS_IOT_PUBLISH_TOPIC);
+    mqtt_client.publish(SHADOW_UPDATE_TOPIC.c_str(), state->get_shadow_update_document());
+
+    Serial.println("Published to: " + SHADOW_UPDATE_TOPIC);
     last_live_publish_time = millis();
 }
 

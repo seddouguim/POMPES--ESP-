@@ -1,6 +1,6 @@
 #include "Manager.h"
 
-#define PAUSE true
+#define PAUSE false
 
 Manager::Manager(size_t num_cycles, Cycle *cycles)
     : num_cycles(num_cycles), cycles(cycles),
