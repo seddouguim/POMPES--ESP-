@@ -42,7 +42,7 @@ void State::init()
 void State::update()
 {
     previous_temperature = current_temperature;
-    current_temperature = Thermocouple.readCelsius() || 0;
+    current_temperature = Thermocouple.readCelsius();
     // current_temperature = random(10, 100);
 
     previous_resistance_state = resistance_state;
