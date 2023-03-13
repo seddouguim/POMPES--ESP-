@@ -8,8 +8,11 @@
 #define DEBUG_RATIO 360
 
 // NETWORK
-#define WIFI_SSID "UPC2703909"
-#define WIFI_PASSWORD "nxkVF7ksvt8j"
+// #define WIFI_SSID "UPC2703909"
+// #define WIFI_PASSWORD "nxkVF7ksvt8j"
+
+#define WIFI_SSID "UPC3404214"
+#define WIFI_PASSWORD "Y66aedjtudhw"
 
 #define MQTT_PUBLISH_INTERVAL 1000
 #define MQTT_DATABASE_PUBLISH_INTERVAL 60000
@@ -20,9 +23,9 @@
 #define PUMP_PIN 4
 
 // THERMOCOUPLE PINS
-#define CLK 14
-#define CS 0
-#define MISO 12 // DO
+#define MAX6675_CLK 14
+#define MAX6675_CS 0
+#define MAX6675_MISO 12 // DO
 
 // TEMPERATURE VARIABLES
 extern float MIN_TEMPERATURE;

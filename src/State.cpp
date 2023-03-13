@@ -1,7 +1,7 @@
 #include "State.h"
 
 State::State()
-    : Thermocouple(Adafruit_MAX31855(CLK, CS, MISO))
+    : Thermocouple(MAX6675(int(MAX6675_CLK), int(MAX6675_CS), int(MAX6675_MISO)))
 {
     init();
 }
@@ -9,7 +9,6 @@ State::State()
 void State::init()
 {
     Serial.println("Initializing thermocouple...");
-    Thermocouple.begin();
     delay(500);
     Serial.println("Thermocouple initialized.");
 
