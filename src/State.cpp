@@ -30,6 +30,8 @@ void State::init()
     pump_kwh = 0;
     resistance_kwh = 0;
 
+    last_update = 0;
+
     pinMode(RESISTANCE_PIN, OUTPUT);
     pinMode(PUMP_PIN, OUTPUT);
 
@@ -40,6 +42,11 @@ void State::init()
 
 void State::update()
 {
+    if (millis() - last_update < 500)
+        return;
+
+    last_update = millis();
+
     previous_temperature = current_temperature;
     current_temperature = Thermocouple.readCelsius();
     // current_temperature = random(10, 100);

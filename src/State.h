@@ -22,6 +22,8 @@ public:
 private:
     MAX6675 Thermocouple;
 
+    unsigned long last_update;
+
     //* TODO: GET CUID FROM EEPROM
     String CUID = "claay207y00083b6qint7umkc";
 
