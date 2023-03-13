@@ -8,16 +8,16 @@ void Display::update(State *state)
     if (this->state == nullptr)
         this->state = state;
 
-    if (millis() - last_update < 1000)
+    if (millis() - last_update < 500)
         return;
 
     last_update = millis();
 
+    Serial.println("Sending updates to display...");
+
     update_resistance();
     update_pump();
     update_temperature();
-
-    Serial.println("Sending updates to display...");
 }
 
 void Display::update_resistance()

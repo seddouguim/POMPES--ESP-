@@ -23,9 +23,9 @@
 #define PUMP_PIN 4
 
 // THERMOCOUPLE PINS
-#define CLK 14
-#define CS 0
-#define MISO 12 // DO
+#define MAX6675_CLK 14
+#define MAX6675_CS 0
+#define MAX6675_MISO 12 // DO
 
 // TEMPERATURE VARIABLES
 extern float MIN_TEMPERATURE;

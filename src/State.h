@@ -2,7 +2,7 @@
 #define SRC_STATE
 
 #include <Arduino.h>
-#include <Adafruit_MAX31855.h>
+#include "max6675.h"
 #include <ArduinoJson.h>
 #include "config.h"
 
@@ -20,7 +20,9 @@ public:
     bool get_pump_update();
 
 private:
-    Adafruit_MAX31855 Thermocouple;
+    MAX6675 Thermocouple;
+
+    unsigned long last_update;
 
     //* TODO: GET CUID FROM EEPROM
     String CUID = "claay207y00083b6qint7umkc";
