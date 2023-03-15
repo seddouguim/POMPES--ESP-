@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include "config.h"
 
+// GIT REMOTE TEST
+
 #define OFF 0
 #define ON 1
 #define AUTO 2
