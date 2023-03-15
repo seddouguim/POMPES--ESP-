@@ -1,12 +1,18 @@
 #include "Display.h"
 
-Display::Display() : state(nullptr), last_update(0ul), command("") {}
+Display::Display() : state(nullptr), last_update(0ul), initialized(false), command("") {}
 
 void Display::update(State *state)
 {
 
     if (this->state == nullptr)
         this->state = state;
+
+    if (!initialized)
+    {
+        init();
+        initialized = true;
+    }
 
     if (millis() - last_update < 500)
         return;
@@ -18,6 +24,75 @@ void Display::update(State *state)
     update_resistance();
     update_pump();
     update_temperature();
+}
+
+void Display::init()
+{
+    if (initialized)
+        return;
+
+    Serial.println("Initializing display...");
+
+    // DISPLAY RESISTANCE OFF
+    command = "page0.resTimer.en=0";
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    command = "page0.res.pic=" + String(RESISTANCE_OFF_PIC);
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    command = "page0.resStatus.txt=\"OFF\"";
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    command = "page0.resStatus.pco=" + String(RED);
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    // DISPLAY PUMP OFF
+
+    Serial.println("Updating pump state to OFF.");
+
+    command = "page0.pumpTimer.en=0";
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    command = "page0.pump.pic=" + String(PUMP_OFF_PIC);
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    command = "page0.pumpStatus.txt=\"OFF\"";
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
+
+    command = "page0.pumpStatus.pco=" + String(RED);
+    Screen.print(command);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Screen.write(0xff);
+    Serial.println("Command sent: " + command);
 }
 
 void Display::update_resistance()

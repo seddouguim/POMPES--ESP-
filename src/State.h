@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "max6675.h"
+#include "Adafruit_MAX31855.h"
 #include <ArduinoJson.h>
 #include "config.h"
 
@@ -21,6 +22,7 @@ public:
 
 private:
     MAX6675 Thermocouple;
+    Adafruit_MAX31855 Thermocouple_max31855;
 
     unsigned long last_update;
 

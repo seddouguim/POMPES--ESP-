@@ -14,8 +14,11 @@ private:
     State *state;
 
     unsigned long last_update;
+    bool initialized;
 
     String command;
+
+    void init();
 
     void update_resistance();
     void update_pump();

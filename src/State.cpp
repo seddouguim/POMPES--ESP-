@@ -1,7 +1,8 @@
 #include "State.h"
 
 State::State()
-    : Thermocouple(MAX6675(int(MAX6675_CLK), int(MAX6675_CS), int(MAX6675_MISO)))
+    : Thermocouple(MAX6675(MAX_CLK, MAX_CS, MAX_MISO)),
+      Thermocouple_max31855(Adafruit_MAX31855(MAX_CLK, MAX_CS, MAX_MISO))
 {
     init();
 }
@@ -9,6 +10,10 @@ State::State()
 void State::init()
 {
     Serial.println("Initializing thermocouple...");
+
+    if (!DEV)
+        Thermocouple_max31855.begin();
+
     delay(500);
     Serial.println("Thermocouple initialized.");
 
@@ -16,10 +21,10 @@ void State::init()
     previous_temperature = 0;
 
     resistance_state = false;
-    previous_resistance_state = false;
+    previous_resistance_state = NULL;
 
     pump_state = false;
-    previous_pump_state = false;
+    previous_pump_state = NULL;
 
     pump_start_timer = 0;
     resistance_start_timer = 0;
@@ -48,7 +53,7 @@ void State::update()
     last_update = millis();
 
     previous_temperature = current_temperature;
-    current_temperature = Thermocouple.readCelsius();
+    current_temperature = DEV ? Thermocouple.readCelsius() : Thermocouple_max31855.readCelsius();
     // current_temperature = random(10, 100);
 
     previous_resistance_state = resistance_state;
