@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Arduino.h>
 
 #include "Manager.h"
 #include "Cycle.h"
