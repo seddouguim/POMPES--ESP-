@@ -59,6 +59,9 @@ typedef struct Buzzer
     {
         init();
 
+        SERIAL_DEBUG &&
+            Serial.println("Buzzer: playing " + String(times) + " times");
+
         for (int i = 0; i < times; i++)
         {
             tone(BUZZER_PIN, frequency, duration);

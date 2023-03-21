@@ -6,13 +6,15 @@
 #include "State.h"
 #include "ActionHandler.h"
 
+typedef void (*Callback)(String, String, int);
+
 class Cycle : public Event
 {
 public:
     Cycle(String name, size_t num_terms, Term *terms);
     Cycle(String name, size_t num_terms, Term *terms, bool start_condition);
 
-    int run(State *state);
+    int run(State *state, Callback update_screen_callback);
 
 private:
     Term *terms;
@@ -38,6 +40,8 @@ private:
     void init();
     bool is_running();
     int terminate();
+
+    String get_term_name();
 };
 
 #endif /* SRC_CYCLE */

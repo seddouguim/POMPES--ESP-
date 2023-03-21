@@ -13,10 +13,6 @@ bool Manager::is_running()
 
 void Manager::run()
 {
-    // if the manager is not running, we return
-    if (!is_running())
-        return;
-
     // At each iteration, we update the state
     state.update();
 
@@ -26,15 +22,31 @@ void Manager::run()
     // Run network loop
     network.loop(&state);
 
-    // We run the current cycle
-    // We also send a reference to the state
-    // If the cycle is finished, we move to the next cycle
+    // If all the cycles are finished, we return
+    if (!is_running())
+    {
+        display.terminate();
+
+        // if the resistance and the pump are running, we turn them off.
+        if (digitalRead(PUMP_PIN) == HIGH)
+            digitalWrite(PUMP_PIN, LOW);
+
+        if (digitalRead(RESISTANCE_PIN) == HIGH)
+            digitalWrite(RESISTANCE_PIN, LOW);
+
+        Serial.println("All cycles finished.");
+
+        return;
+    }
+
     if (PAUSE)
         return;
 
-    if (cycles[current_cycle].run(&state) == 0)
+    // We run the current cycle
+    // We also send a reference to the state
+    // If the cycle is finished, we move to the next cycle
+    if (cycles[current_cycle].run(&state, display.update_cycle) == 0)
     {
-        Serial.println("Cycle finished");
         current_cycle++;
     }
 }

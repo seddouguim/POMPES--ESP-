@@ -8,6 +8,8 @@ class Display
 public:
     Display();
     void update(State *state);
+    void terminate();
+    static void update_cycle(String cycle, String term, int color);
 
 private:
     // Reference to State

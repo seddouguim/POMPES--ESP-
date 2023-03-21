@@ -21,10 +21,10 @@ void State::init()
     previous_temperature = 0;
 
     resistance_state = false;
-    previous_resistance_state = NULL;
+    previous_resistance_state = false;
 
     pump_state = false;
-    previous_pump_state = NULL;
+    previous_pump_state = false;
 
     pump_start_timer = 0;
     resistance_start_timer = 0;
@@ -39,15 +39,11 @@ void State::init()
 
     pinMode(RESISTANCE_PIN, OUTPUT);
     pinMode(PUMP_PIN, OUTPUT);
-
-    // Make sure the pump is OFF and the resistance is ON
-    digitalWrite(RESISTANCE_PIN, HIGH);
-    digitalWrite(PUMP_PIN, LOW);
 }
 
 void State::update()
 {
-    if (millis() - last_update < 500)
+    if (millis() - last_update < 1000)
         return;
 
     last_update = millis();
@@ -127,8 +123,10 @@ void State::pump_kw()
     {
         pump_start_timer = millis();
 
-        Serial.println("Pump state just turned on, calculating kws.");
-        Serial.println("Calculations start time: " + String(pump_start_timer));
+        SERIAL_DEBUG &&
+            Serial.println("Pump state just turned on, calculating kws.");
+        SERIAL_DEBUG &&
+            Serial.println("Calculations start time: " + String(pump_start_timer));
     }
 
     // Pump has just turned OFF
@@ -139,11 +137,15 @@ void State::pump_kw()
         unsigned long pump_on_time_interval = millis() - pump_start_timer;
         pump_on_time_total += pump_on_time_interval;
 
-        Serial.println("Pump state just changed to: OFF, calculating kws.");
-        Serial.println("End time: " + String(millis()));
+        SERIAL_DEBUG &&
+            Serial.println("Pump state just changed to: OFF, calculating kws.");
+        SERIAL_DEBUG &&
+            Serial.println("End time: " + String(millis()));
 
-        Serial.println("ON interval:  " + String(pump_on_time_interval));
-        Serial.println("Pump total ON time:  " + String(pump_on_time_total));
+        SERIAL_DEBUG &&
+            Serial.println("ON interval:  " + String(pump_on_time_interval));
+        SERIAL_DEBUG &&
+            Serial.println("Pump total ON time:  " + String(pump_on_time_total));
 
         // We calculate the number of kilowatt-hours
         pump_kwh = (pump_on_time_total / (3600 * 1000)) * PUMP_CONSUMPTION;
@@ -161,8 +163,10 @@ void State::resistance_kw()
     {
         resistance_start_timer = millis();
 
-        Serial.println("Resistance state just changed to: ON, starting timer.");
-        Serial.println("Start time: " + String(resistance_start_timer));
+        SERIAL_DEBUG &&
+            Serial.println("Resistance state just changed to: ON, starting timer.");
+        SERIAL_DEBUG &&
+            Serial.println("Start time: " + String(resistance_start_timer));
     }
 
     // Resistance has just turned OFF
@@ -172,11 +176,15 @@ void State::resistance_kw()
         unsigned long resistance_on_time_interval = millis() - resistance_start_timer;
         resistance_on_time_total += resistance_on_time_interval;
 
-        Serial.println("Resistance state just changed to: OFF, calculating kws.");
-        Serial.println("End time: " + String(millis()));
+        SERIAL_DEBUG &&
+            Serial.println("Resistance state just changed to: OFF, calculating kws.");
+        SERIAL_DEBUG &&
+            Serial.println("End time: " + String(millis()));
 
-        Serial.println("ON interval:  " + String(resistance_on_time_interval));
-        Serial.println("Resistance total ON time:  " + String(resistance_on_time_total));
+        SERIAL_DEBUG &&
+            Serial.println("ON interval:  " + String(resistance_on_time_interval));
+        SERIAL_DEBUG &&
+            Serial.println("Resistance total ON time:  " + String(resistance_on_time_total));
 
         // We calculate the number of kilowatt-hours
         resistance_kwh = (resistance_on_time_total / (3600 * 1000)) * RESISTANCE_CONSUMPTION;

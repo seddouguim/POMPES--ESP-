@@ -52,21 +52,24 @@ void Network::get_time(void)
     if (now != 0)
         return;
 
+    // SERIAL_DEBUG &&
     Serial.print("Setting time using SNTP.");
     configTime(TIME_ZONE * 3600, 0 * 3600, "pool.ntp.org", "time.nist.gov");
     now = time(nullptr);
     while (now < nowish)
     {
         delay(500);
+        // SERIAL_DEBUG &&
         Serial.print(".");
         now = time(nullptr);
     }
+
+    // SERIAL_DEBUG &&
     Serial.print("done!");
+    Serial.println();
+
     struct tm timeinfo;
     gmtime_r(&now, &timeinfo);
-
-    Serial.println();
-    Serial.print("Current time: " + String(asctime(&timeinfo)));
 }
 
 void Network::connect_wifi()
@@ -80,16 +83,19 @@ void Network::connect_wifi()
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_ssid, WIFI_password);
 
+    // SERIAL_DEBUG &&
     Serial.print("Attempting to connect to WiFi (SSID: " + WIFI_ssid + ")");
 
     // Wait for connection
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
+        // SERIAL_DEBUG &&
         Serial.print(".");
     }
-    Serial.println();
-    Serial.println("Connected to the WiFi network.");
+
+    // SERIAL_DEBUG &&
+    Serial.println("Connected to WiFi!");
 }
 
 void Network::connect_mqtt()
@@ -99,7 +105,8 @@ void Network::connect_mqtt()
     if (mqtt_client.connected())
         return;
 
-    Serial.println("Connecting to AWS IOT.");
+    // SERIAL_DEBUG &&
+    Serial.println("Attempting to connect to AWS IOT.");
 
     while (!mqtt_client.connect(THING_NAME.c_str()))
     {
@@ -115,6 +122,7 @@ void Network::connect_mqtt()
     // Subscribe to a topic
     mqtt_client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC.c_str());
 
+    // SERIAL_DEBUG &&
     Serial.println("AWS IoT Connected!");
     Serial.println();
 }
@@ -130,7 +138,9 @@ void Network::publish_live_data_message()
 
     mqtt_client.publish(SHADOW_UPDATE_TOPIC.c_str(), state->get_shadow_update_document());
 
-    Serial.println("Published to: " + SHADOW_UPDATE_TOPIC);
+    SERIAL_DEBUG &&
+        Serial.println("Published to: " + SHADOW_UPDATE_TOPIC);
+
     last_live_publish_time = millis();
 }
 
@@ -144,8 +154,12 @@ void Network::publish_database_message()
     String topic = "database/" + AWS_IOT_PUBLISH_TOPIC;
     mqtt_client.publish(topic.c_str(), state->get_state_json());
 
-    Serial.println("Data saved to database.");
-    Serial.println("Published to: " + topic);
+    SERIAL_DEBUG &&
+        Serial.println("Data saved to database.");
+
+    SERIAL_DEBUG &&
+        Serial.println("Published to: " + topic);
+
     last_database_publish_time = millis();
 }
 

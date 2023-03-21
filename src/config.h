@@ -4,21 +4,22 @@
 #include <Arduino.h>
 
 // ENVIRONMENT
-#define DEV false
+#define DEV true
 
 // DEBUG
-#define DEBUG true
+#define DEBUG false
 #define DEBUG_RATIO 360
+#define SERIAL_DEBUG false
 
 // NETWORK
-#define WIFI_SSID ""
-#define WIFI_PASSWORD ""
+#define WIFI_SSID "BoxxComms"
+#define WIFI_PASSWORD "01614287523"
 
-// #define WIFI_SSID_DEV "UPC2703909"
-// #define WIFI_PASSWORD_DEV "nxkVF7ksvt8j"
+#define WIFI_SSID_DEV "UPC2703909"
+#define WIFI_PASSWORD_DEV "nxkVF7ksvt8j"
 
-#define WIFI_SSID_DEV "UPC3404214"
-#define WIFI_PASSWORD_DEV "Y66aedjtudhw"
+// #define WIFI_SSID_DEV "UPC3404214"
+// #define WIFI_PASSWORD_DEV "Y66aedjtudhw"
 
 #define MQTT_PUBLISH_INTERVAL 1000
 #define MQTT_DATABASE_PUBLISH_INTERVAL 60000
@@ -47,9 +48,16 @@ extern float PUMP_CONSUMPTION;
 #define GREEN 960
 #define RED 47169
 #define BLUE 343
+#define SKYBLUE 42654
+#define SALMON 64073
+#define ORANGE 62961
+#define LIGHTGREEN 38706
 
-#define RESISTANCE_OFF_PIC 81
+#define RESISTANCE_OFF_PIC 84
 #define PUMP_OFF_PIC 80
+
+#define ARROW_UP_PIC 85
+#define ARROW_DOWN_PIC 86
 
 #define Screen Serial1
 

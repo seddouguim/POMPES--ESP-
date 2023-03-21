@@ -13,7 +13,7 @@ void Term::init()
 
     // Play a beep to indicate that the term starts
     buzzer.play(TERM_BEEP_AMOUNT);
-    Serial.println(get_name() + " started. (duration: " + String(duration / 1000) + " seconds)");
+    Serial.println("Term " + get_name() + " started. (duration: " + String(duration / 1000) + " seconds)");
 }
 
 bool Term::is_running()
@@ -27,7 +27,10 @@ bool Term::terminate()
     // We re-initialize the term
     end_time = 0;
 
-    Serial.println(get_name() + " finished.");
+    // Play a beep to indicate that the term ends
+    buzzer.play(TERM_BEEP_AMOUNT);
+
+    Serial.println("Term " + get_name() + " finished.");
     return false;
 }
 

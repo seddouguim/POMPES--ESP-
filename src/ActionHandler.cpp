@@ -28,24 +28,28 @@ void ActionHandler::handle_resistance()
     {
     case ON:
         digitalWrite(RESISTANCE_PIN, HIGH);
-        Serial.println("Resistance ON.");
+        SERIAL_DEBUG &&
+            Serial.println("Resistance ON.");
         break;
 
     case OFF:
         digitalWrite(RESISTANCE_PIN, LOW);
-        Serial.println("Resistance OFF.");
+        SERIAL_DEBUG &&
+            Serial.println("Resistance OFF.");
         break;
 
     case AUTO:
         if (state->current_temperature >= MAX_TEMPERATURE && state->resistance_state == ON)
         {
             digitalWrite(RESISTANCE_PIN, LOW);
-            Serial.println("Temperature " + String(state->current_temperature) + " > " + String(MAX_TEMPERATURE) + " -> Resistance OFF.");
+            SERIAL_DEBUG &&
+                Serial.println("Temperature " + String(state->current_temperature) + " > " + String(MAX_TEMPERATURE) + " -> Resistance OFF.");
         }
         else if (state->current_temperature <= MIN_TEMPERATURE && state->resistance_state == OFF)
         {
             digitalWrite(RESISTANCE_PIN, HIGH);
-            Serial.println("Temperature " + String(state->current_temperature) + " < " + String(MIN_TEMPERATURE) + " -> Resistance ON.");
+            SERIAL_DEBUG &&
+                Serial.println("Temperature " + String(state->current_temperature) + " < " + String(MIN_TEMPERATURE) + " -> Resistance ON.");
         }
         break;
     }
@@ -60,12 +64,14 @@ void ActionHandler::handle_pump()
     {
     case ON:
         digitalWrite(PUMP_PIN, HIGH);
-        Serial.println("Pump ON.");
+        SERIAL_DEBUG &&
+            Serial.println("Pump ON.");
         break;
 
     case OFF:
         digitalWrite(PUMP_PIN, LOW);
-        Serial.println("Pump OFF.");
+        SERIAL_DEBUG &&
+            Serial.println("Pump OFF.");
         break;
 
     // turn pump on for 20 seconds and turn off for 40 seconds
@@ -76,12 +82,14 @@ void ActionHandler::handle_pump()
         if (state->pump_state == OFF && millis() == toggle_pump_start_time)
         {
             digitalWrite(PUMP_PIN, HIGH);
-            Serial.println("Pump ON for 20 seconds.");
+            SERIAL_DEBUG &&
+                Serial.println("Pump ON for 20 seconds.");
         }
         if (millis() - toggle_pump_start_time > 20000 && state->pump_state == ON)
         {
             digitalWrite(PUMP_PIN, LOW);
-            Serial.println("Pump OFF for 40 seconds.");
+            SERIAL_DEBUG &&
+                Serial.println("Pump OFF for 40 seconds.");
         }
 
         if (millis() - toggle_pump_start_time > 60000)
@@ -92,12 +100,14 @@ void ActionHandler::handle_pump()
         if (state->current_temperature >= MAX_TEMPERATURE && state->pump_state == ON)
         {
             digitalWrite(PUMP_PIN, LOW);
-            Serial.println("Temperature " + String(state->current_temperature) + " > " + String(MAX_TEMPERATURE) + " -> Pump OFF.");
+            SERIAL_DEBUG &&
+                Serial.println("Temperature " + String(state->current_temperature) + " > " + String(MAX_TEMPERATURE) + " -> Pump OFF.");
         }
         else if (state->current_temperature <= MIN_TEMPERATURE && state->pump_state == OFF)
         {
             digitalWrite(PUMP_PIN, HIGH);
-            Serial.println("Temperature " + String(state->current_temperature) + " < " + String(MIN_TEMPERATURE) + " -> Pump ON.");
+            SERIAL_DEBUG &&
+                Serial.println("Temperature " + String(state->current_temperature) + " < " + String(MIN_TEMPERATURE) + " -> Pump ON.");
         }
         break;
     }
