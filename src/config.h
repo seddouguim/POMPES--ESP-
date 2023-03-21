@@ -4,10 +4,10 @@
 #include <Arduino.h>
 
 // ENVIRONMENT
-#define DEV true
+#define DEV false
 
 // DEBUG
-#define DEBUG false
+#define DEBUG true
 #define DEBUG_RATIO 360
 #define SERIAL_DEBUG false
 
