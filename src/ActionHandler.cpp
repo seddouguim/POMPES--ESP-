@@ -97,17 +97,17 @@ void ActionHandler::handle_pump()
         break;
 
     case AUTO:
-        if (state->current_temperature >= MAX_TEMPERATURE && state->pump_state == ON)
-        {
-            digitalWrite(PUMP_PIN, LOW);
-            SERIAL_DEBUG &&
-                Serial.println("Temperature " + String(state->current_temperature) + " > " + String(MAX_TEMPERATURE) + " -> Pump OFF.");
-        }
-        else if (state->current_temperature <= MIN_TEMPERATURE && state->pump_state == OFF)
+        if (state->current_temperature >= PUMP_ON_TEMPERATURE && state->pump_state == OFF)
         {
             digitalWrite(PUMP_PIN, HIGH);
             SERIAL_DEBUG &&
-                Serial.println("Temperature " + String(state->current_temperature) + " < " + String(MIN_TEMPERATURE) + " -> Pump ON.");
+                Serial.println("Temperature " + String(state->current_temperature) + " > " + String(PUMP_ON_TEMPERATURE) + " -> Pump ON.");
+        }
+        else if (state->current_temperature <= PUMP_OFF_TEMPERATURE && state->pump_state == ON)
+        {
+            digitalWrite(PUMP_PIN, LOW);
+            SERIAL_DEBUG &&
+                Serial.println("Temperature " + String(state->current_temperature) + " < " + String(PUMP_OFF_TEMPERATURE) + " -> Pump OFF.");
         }
         break;
     }
