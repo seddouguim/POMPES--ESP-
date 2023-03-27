@@ -32,8 +32,8 @@ void Display::init()
     if (initialized)
         return;
 
-    // SERIAL_DEBUG &&
-    Serial.println("Initializing display...");
+    SERIAL_DEBUG &&
+        Serial.println("Initializing display...");
 
     command = "page0.pumpStatus.pco=" + String(RED);
     Screen.print(command);
@@ -111,7 +111,9 @@ void Display::init()
     Screen.write(0xff);
 
     initialized = true;
-    Serial.println("Display initialized.");
+
+    SERIAL_DEBUG &&
+        Serial.println("Display initialized.");
 }
 
 void Display::update_resistance()

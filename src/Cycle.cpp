@@ -27,7 +27,9 @@ void Cycle::init()
 
     // Play a beep to indicate that the cycle starts
     buzzer.play(CYCLE_BEEP_AMOUNT);
-    Serial.println(this->get_name() + " Cycle started. (duration: " + String(duration / 1000) + " seconds)");
+
+    SERIAL_DEBUG &&
+        Serial.println(this->get_name() + " Cycle started. (duration: " + String(duration / 1000) + " seconds)");
 }
 
 int Cycle::terminate()
@@ -36,7 +38,8 @@ int Cycle::terminate()
     current_term = 0;
     duration = 0ul;
 
-    Serial.println(this->get_name() + " Cycle finished.");
+    SERIAL_DEBUG &&
+        Serial.println(this->get_name() + " Cycle finished.");
 
     return 0;
 }
@@ -52,9 +55,10 @@ int Cycle::verify_start_condition()
     // if the start condition message has not been displayed, we display it
     if (start_condition_message_displayed == MESSAGE_NOT_DISPLAYED)
     {
-        Serial.println("Waiting for start condition to be met... (MAX_TEMPERATURE)");
-        start_condition_message_displayed = MESSAGE_DISPLAYED;
+        SERIAL_DEBUG &&
+            Serial.println("Waiting for start condition to be met... (MAX_TEMPERATURE)");
 
+        start_condition_message_displayed = MESSAGE_DISPLAYED;
         digitalWrite(RESISTANCE_PIN, HIGH);
     }
 
@@ -64,8 +68,12 @@ int Cycle::verify_start_condition()
     if (state->current_temperature >= MAX_TEMPERATURE)
     {
         start_condition = false;
-        Serial.println("Start condition met.");
-        Serial.println("Starting " + get_name() + "."); // Note: get_name() is a method of the Event class
+
+        SERIAL_DEBUG &&
+            Serial.println("Start condition met.");
+
+        SERIAL_DEBUG &&
+            Serial.println("Starting " + get_name() + "."); // Note: get_name() is a method of the Event class
 
         return 1;
     }

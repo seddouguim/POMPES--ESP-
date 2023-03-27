@@ -83,19 +83,19 @@ void Network::connect_wifi()
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_ssid, WIFI_password);
 
-    // SERIAL_DEBUG &&
-    Serial.print("Attempting to connect to WiFi (SSID: " + WIFI_ssid + ")");
+    SERIAL_DEBUG &&
+        Serial.print("Attempting to connect to WiFi (SSID: " + WIFI_ssid + ")");
 
     // Wait for connection
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
-        // SERIAL_DEBUG &&
-        Serial.print(".");
+        SERIAL_DEBUG &&
+            Serial.print(".");
     }
 
-    // SERIAL_DEBUG &&
-    Serial.println("Connected to WiFi!");
+    SERIAL_DEBUG &&
+        Serial.println("Connected to WiFi!");
 }
 
 void Network::connect_mqtt()
@@ -105,8 +105,8 @@ void Network::connect_mqtt()
     if (mqtt_client.connected())
         return;
 
-    // SERIAL_DEBUG &&
-    Serial.println("Attempting to connect to AWS IOT.");
+    SERIAL_DEBUG &&
+        Serial.println("Attempting to connect to AWS IOT.");
 
     while (!mqtt_client.connect(THING_NAME.c_str()))
     {
@@ -116,15 +116,18 @@ void Network::connect_mqtt()
 
     if (!mqtt_client.connected())
     {
-        Serial.println("AWS IoT Timeout!");
+        SERIAL_DEBUG &&
+            Serial.println("AWS IoT Timeout!");
         return;
     }
     // Subscribe to a topic
     mqtt_client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC.c_str());
 
-    // SERIAL_DEBUG &&
-    Serial.println("AWS IoT Connected!");
-    Serial.println();
+    SERIAL_DEBUG &&
+        Serial.println("AWS IoT Connected!");
+
+    SERIAL_DEBUG &&
+        Serial.println();
 }
 
 void Network::publish_live_data_message()
@@ -193,7 +196,9 @@ void Network::loop(State *state)
         // If the internal server is running, we check if we have wifi credentials
         if (server.get_wifi_credentials_saved())
         {
-            Serial.println("Wifi credentials saved.");
+            SERIAL_DEBUG &&
+                Serial.println("Wifi credentials saved.");
+
             WIFI_ssid = server.get_WIFI_ssid();
             WIFI_password = server.get_WIFI_password();
 
