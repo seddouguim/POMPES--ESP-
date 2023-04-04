@@ -9,13 +9,10 @@ State::State()
 
 void State::init()
 {
-    Serial.println("Initializing thermocouple...");
-
     if (!DEV)
         Thermocouple_max31855.begin();
 
     delay(500);
-    Serial.println("Thermocouple initialized.");
 
     current_temperature = 0;
     previous_temperature = 0;
@@ -120,32 +117,14 @@ void State::pump_kw()
     // Pump has just turned ON
     // We start the pump timer
     if (pump_state)
-    {
         pump_start_timer = millis();
-
-        SERIAL_DEBUG &&
-            Serial.println("Pump state just turned on, calculating kws.");
-        SERIAL_DEBUG &&
-            Serial.println("Calculations start time: " + String(pump_start_timer));
-    }
 
     // Pump has just turned OFF
     // We calculate the time the PUMP has been on
     else
     {
-
         unsigned long pump_on_time_interval = millis() - pump_start_timer;
         pump_on_time_total += pump_on_time_interval;
-
-        SERIAL_DEBUG &&
-            Serial.println("Pump state just changed to: OFF, calculating kws.");
-        SERIAL_DEBUG &&
-            Serial.println("End time: " + String(millis()));
-
-        SERIAL_DEBUG &&
-            Serial.println("ON interval:  " + String(pump_on_time_interval));
-        SERIAL_DEBUG &&
-            Serial.println("Pump total ON time:  " + String(pump_on_time_total));
 
         // We calculate the number of kilowatt-hours
         pump_kwh = (pump_on_time_total / (3600 * 1000)) * PUMP_CONSUMPTION;
@@ -160,14 +139,7 @@ void State::resistance_kw()
     // Resistance has just turned ON
     // We start the resistance timer
     if (resistance_state)
-    {
         resistance_start_timer = millis();
-
-        SERIAL_DEBUG &&
-            Serial.println("Resistance state just changed to: ON, starting timer.");
-        SERIAL_DEBUG &&
-            Serial.println("Start time: " + String(resistance_start_timer));
-    }
 
     // Resistance has just turned OFF
     // We calculate the time the resistance has been on
@@ -175,16 +147,6 @@ void State::resistance_kw()
     {
         unsigned long resistance_on_time_interval = millis() - resistance_start_timer;
         resistance_on_time_total += resistance_on_time_interval;
-
-        SERIAL_DEBUG &&
-            Serial.println("Resistance state just changed to: OFF, calculating kws.");
-        SERIAL_DEBUG &&
-            Serial.println("End time: " + String(millis()));
-
-        SERIAL_DEBUG &&
-            Serial.println("ON interval:  " + String(resistance_on_time_interval));
-        SERIAL_DEBUG &&
-            Serial.println("Resistance total ON time:  " + String(resistance_on_time_total));
 
         // We calculate the number of kilowatt-hours
         resistance_kwh = (resistance_on_time_total / (3600 * 1000)) * RESISTANCE_CONSUMPTION;

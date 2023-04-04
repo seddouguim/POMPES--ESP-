@@ -13,6 +13,10 @@ public:
 private:
     String name;
     unsigned long duration;
+    EventStatus status;
+
+    virtual void init();
+    bool initialized;
 
     static Buzzer buzzer;
 

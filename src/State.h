@@ -14,7 +14,6 @@ public:
     void update();
     char *get_state_json();
     char *get_shadow_update_document();
-    StaticJsonDocument<200> *get_state_doc();
 
     bool get_temperature_update();
     bool get_resistance_update();

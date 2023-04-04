@@ -3,65 +3,79 @@
 
 #include <Arduino.h>
 
-// ENVIRONMENT
-#define DEV false
+//? ----------------------- PROGRAM CONFIG ----------------------------
+// Update PROGRAM_MODE depending on which version of the program you want to run:
+// - "BENCH" -- communication with the UNO
+// - "OFFICIAL" -- no communication with the UNO
+// - "USER" -- no communication with the UNO, only two cycles (WARMING UP and DRAINING),
+//             with automatic resistance and pump control
 
-// DEBUG
+#define PROGRAM_MODE USER
+
+//? DEBUG
 #define DEBUG true
 #define DEBUG_RATIO 360
-#define SERIAL_DEBUG false
+#define DEV false
 
-// NETWORK
-#define WIFI_SSID "BoxxComms"
-#define WIFI_PASSWORD "01614287523"
-
-#define WIFI_SSID_DEV "UPC2703909"
-#define WIFI_PASSWORD_DEV "nxkVF7ksvt8j"
-
-// #define WIFI_SSID_DEV "UPC3404214"
-// #define WIFI_PASSWORD_DEV "Y66aedjtudhw"
-
+//? NETWORK
 #define MQTT_PUBLISH_INTERVAL 1000
 #define MQTT_DATABASE_PUBLISH_INTERVAL 60000
 
-// ESP PINS
+#define CONNECTION_TIMEOUT 10000
+
+//? ESP PINS
 #define BUZZER_PIN 13
 #define RESISTANCE_PIN 5
 #define PUMP_PIN 4
 
-// THERMOCOUPLE PINS
+//? THERMOCOUPLE PINS
 #define MAX_CLK 14
 #define MAX_CS 0
 #define MAX_MISO 12 // DO
 
-// TEMPERATURE VARIABLES
+//? TEMPERATURE VARIABLES
 extern float MIN_TEMPERATURE;
 extern float MAX_TEMPERATURE;
 extern float PUMP_ON_TEMPERATURE;
 extern float PUMP_OFF_TEMPERATURE;
 
-// ENERGY CONSUMPTION VARIABLES
+//? ENERGY CONSUMPTION VARIABLES
 extern float RESISTANCE_CONSUMPTION;
 extern float PUMP_CONSUMPTION;
 
-// SCREEN VARIABLES
-#define GREEN 960
-#define RED 47169
+//? SCREEN VARIABLES
+#define ScreenRX Serial
+#define ScreenTX Serial
+#define NEXTION_END_STRING "\xff\xff\xff"
+
+//? UNO TX
+#define UNO_TX Serial1 // TX: D4, NO RX
+
+//* COLORS
+#define GREEN 1153
+#define RED 43365
 #define BLUE 343
 #define SKYBLUE 42654
 #define SALMON 64073
 #define ORANGE 62961
 #define LIGHTGREEN 38706
+#define YELLOW 65504
+#define WHITE 65535
+#define BLACK 0
+#define DARKGREY 17002
 
-#define RESISTANCE_OFF_PIC 84
-#define PUMP_OFF_PIC 80
+//* PICTURES
+#define ARROW_UP_PIC 158
+#define ARROW_DOWN_PIC 157
 
-#define ARROW_UP_PIC 85
-#define ARROW_DOWN_PIC 86
+#define WIFI_CONNECTED_PIC 4
+#define WIFI_DISCONNECTED_PIC 3
 
-#define Screen Serial1
+#define WIFI_HIGH_PIC 178
+#define WIFI_MED_PIC 180
+#define WIFI_LOW_PIC 179
 
-// MISCELLANEOUS
+//? MISCELLANEOUS
 #define MESSAGE_NOT_DISPLAYED 0
 #define MESSAGE_DISPLAYED 1
 

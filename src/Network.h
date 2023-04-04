@@ -2,13 +2,13 @@
 #define SRC_NETWORK
 
 #include <ESP8266WiFi.h>
+#include <LittleFS.h>
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <time.h>
 #include "State.h"
 #include "secrets.h"
-#include "InternalServer.h"
 
 class Network
 {
@@ -16,20 +16,24 @@ public:
     Network();
     void loop(State *state);
 
+    void save_wifi_credentials(String ssid, String password);
+    void clear_wifi_credentials();
+
 private:
     bool initialized;
+
     String WIFI_ssid;
     String WIFI_password;
+    int connection_attempts;
 
     // Reference to State
     State *state;
 
     void init();
 
+    void get_wifi_credentials();
     void connect_wifi();
     void connect_mqtt();
-
-    InternalServer server;
 
     // Network Related
     WiFiClientSecure wifi_client;

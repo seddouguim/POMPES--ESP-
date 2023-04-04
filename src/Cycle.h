@@ -6,15 +6,14 @@
 #include "State.h"
 #include "ActionHandler.h"
 
-typedef void (*Callback)(String, String, int);
-
 class Cycle : public Event
 {
 public:
     Cycle(String name, size_t num_terms, Term *terms);
     Cycle(String name, size_t num_terms, Term *terms, bool start_condition);
 
-    int run(State *state, Callback update_screen_callback);
+    EventStatus run(State *state);
+    String get_term_name();
 
 private:
     Term *terms;
@@ -34,14 +33,11 @@ private:
     // We use this to start the cycle when the MAX_TEMPERATURE is reached
     // When the condition is met, start_conndition is set to false
     bool start_condition;
-    int verify_start_condition();
-    byte start_condition_message_displayed;
+    EventStatus verify_start_condition();
 
-    void init();
+    void init() override;
+    EventStatus terminate();
     bool is_running();
-    int terminate();
-
-    String get_term_name();
 };
 
 #endif /* SRC_CYCLE */

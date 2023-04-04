@@ -9,22 +9,29 @@ class Term : public Event
 public:
     Term(String name, Duration duration);
     Term(String name, Duration duration, Actions actions);
-    bool run();
+    Term(String name, Duration duration, Actions actions, char tx_char);
+    EventStatus run();
     Actions get_actions();
 
 private:
     // End time of the term is computed during the initialization of the term.
-    // Initialization is done when the term is run for the first time.
+    // Initialization is TERMINATED when the term is run for the first time.
+    // If indeterminate is true, the term will run indefinitely
     unsigned long end_time;
+    bool indeterminate;
 
     // Contains the actions to be passed on to the Cycle
     // The actions are composed of a PUMP and RESISTANCE state
     // The cycle will poll the current term for actions and execute them
     Actions actions;
 
-    void init();
+    // The tx_char is the character that will be sent to the serial port connected to the UNO.
+    // This only applies when in the mode: "BENCH"
+    char tx_char;
+
+    void init() override;
+    void terminate();
     bool is_running();
-    bool terminate();
 };
 
 #endif /* SRC_TERM */

@@ -58,10 +58,6 @@ typedef struct Buzzer
     void play(int times)
     {
         init();
-
-        SERIAL_DEBUG &&
-            Serial.println("Buzzer: playing " + String(times) + " times");
-
         for (int i = 0; i < times; i++)
         {
             tone(BUZZER_PIN, frequency, duration);
@@ -69,5 +65,42 @@ typedef struct Buzzer
         }
     }
 } Buzzer;
+
+enum Command
+{
+    GET = 1,
+    PAG,
+    CON,
+    DIS,
+    UNKNOWN_COMMAND
+};
+
+enum Page
+{
+    main = 1,
+    WIFI_LIST,
+    WIFI_CREDS,
+    SETTINGS,
+    UNKNOWN_PAGE
+};
+
+enum Mode
+{
+    BENCH,
+    OFFICIAL,
+    USER
+};
+
+enum EventStatus
+{
+    IDLE,
+    RUNNING,
+    PAUSED,
+    TERMINATED,
+    UNKNOWN_STATUS
+};
+
+Page get_page(String page);
+Command get_command(String command);
 
 #endif /* SRC_UTILS */
