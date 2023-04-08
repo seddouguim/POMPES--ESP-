@@ -66,6 +66,17 @@ typedef struct Buzzer
     }
 } Buzzer;
 
+struct Message
+{
+    String text;
+    int duration; // in seconds
+
+    unsigned long getDuration()
+    {
+        return duration * 1000;
+    }
+} typedef Message;
+
 enum Command
 {
     GET = 1,
@@ -95,9 +106,7 @@ enum EventStatus
 {
     IDLE,
     RUNNING,
-    PAUSED,
     TERMINATED,
-    UNKNOWN_STATUS
 };
 
 Page get_page(String page);

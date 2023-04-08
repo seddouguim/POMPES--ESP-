@@ -30,7 +30,7 @@ private:
     char tx_char;
 
     void init() override;
-    void terminate();
+    EventStatus terminate();
     bool is_running();
 };
 

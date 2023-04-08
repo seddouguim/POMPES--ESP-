@@ -2,7 +2,7 @@
 #include "Display.h"
 
 Event::Event(String name, Duration duration)
-    : name(name), duration(duration.toMillis()), status(UNKNOWN_STATUS), initialized(false) {}
+    : name(name), duration(duration.toMillis()), status(IDLE), initialized(false) {}
 
 void Event::init()
 {

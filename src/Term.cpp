@@ -1,4 +1,5 @@
 #include "Term.h"
+#include "Display.h"
 
 Term::Term(String name, Duration duration)
     : Event(name, duration), end_time(0), indeterminate(false), tx_char('\n') {}
@@ -11,6 +12,9 @@ Term::Term(String name, Duration duration, Actions actions, char tx_char)
 
 void Term::init()
 {
+    // we call @super init method
+    Event::init();
+
     // Play a beep to indicate that the term starts
     buzzer.play(TERM_BEEP_AMOUNT);
 
@@ -24,9 +28,6 @@ void Term::init()
 
     // We compute the term's end time
     end_time = millis() + duration;
-
-    // we call @super init method
-    Event::init();
 }
 
 bool Term::is_running()
@@ -39,7 +40,7 @@ bool Term::is_running()
     return millis() < end_time;
 }
 
-void Term::terminate()
+EventStatus Term::terminate()
 {
     // We re-initialize the term
     end_time = 0;
@@ -49,7 +50,11 @@ void Term::terminate()
         UNO_TX.print("<" + String(tx_char) + ">");
 
     // Play a beep to indicate that the term ends
-    buzzer.play(TERM_BEEP_AMOUNT);
+    // buzzer.play(TERM_BEEP_AMOUNT);
+
+    Display::update_state();
+
+    return TERMINATED;
 }
 
 Actions Term::get_actions()
@@ -68,10 +73,7 @@ EventStatus Term::run()
     // This means that the term is finished
     // The cycle will then move to the next term
     if (!is_running())
-    {
-        terminate();
-        return TERMINATED;
-    }
+        return terminate();
 
     // We return true because the term is still running
     return RUNNING;

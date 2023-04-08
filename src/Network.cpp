@@ -86,10 +86,13 @@ void Network::clear_wifi_credentials()
 
 void Network::connect_wifi()
 {
-    // Check if we're connected to WiFi already
-    // Also check if we've tried to connect more than once
-    if (WiFi.status() == WL_CONNECTED || connection_attempts >= 1)
+    // Check if we're connected to WiFi already or if we're already trying to connect
+    if (WiFi.status() == WL_CONNECTED || connection_attempts > 0)
         return;
+
+    // Send temporary message to display
+    Message connection_message{"Connecting to WiFi and AWS...", 0};
+    Display::add_message(connection_message);
 
     // Update WiFi icon
     Display::update_display("main.wifi.pic=" + String(WIFI_DISCONNECTED_PIC));
@@ -103,11 +106,6 @@ void Network::connect_wifi()
     WiFi.mode(WIFI_STA);
     WiFi.begin(this->WIFI_ssid, this->WIFI_password);
 
-    // Update display
-    // @color: ORANGE
-    Display::update_display("main.state.txt=\"Connecting to WiFi...\"");
-    Display::update_display("main.state.pco=" + String(ORANGE));
-
     // Wait for connection or timeout
     while (WiFi.status() != WL_CONNECTED && millis() - start_time < CONNECTION_TIMEOUT)
         delay(500);
@@ -116,8 +114,11 @@ void Network::connect_wifi()
     if (WiFi.status() != WL_CONNECTED)
         return;
 
-    Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
     connection_attempts = 0;
+    Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
+
+    Message connected_message{"Connected to WiFi!", 0};
+    Display::add_message(connected_message);
 }
 
 void Network::connect_mqtt()
@@ -126,20 +127,18 @@ void Network::connect_mqtt()
     if (mqtt_client.connected())
         return;
 
-    // Update display
-    // @color: ORANGE
-    Display::update_display("main.state.txt=\"Connecting to AWS...\"");
-    Display::update_display("main.state.pco=" + String(ORANGE));
-
     unsigned long start_time = millis();
 
     // Wait for connection or timeout
     while (!mqtt_client.connect(THING_NAME.c_str()) && millis() - start_time < CONNECTION_TIMEOUT)
-        delay(1000);
+        delay(500);
 
     // AWS connection timeout
     if (!mqtt_client.connected())
         return;
+
+    Message connected_message{"Connected to AWS!", 0};
+    Display::add_message(connected_message);
 
     // Subscribe to a topic
     // mqtt_client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC.c_str());

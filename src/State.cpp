@@ -12,10 +12,8 @@ void State::init()
     if (!DEV)
         Thermocouple_max31855.begin();
 
-    delay(500);
-
     current_temperature = 0;
-    previous_temperature = 0;
+    previous_temperature = -1;
 
     resistance_state = false;
     previous_resistance_state = false;

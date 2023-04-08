@@ -8,25 +8,32 @@
 class Manager;
 
 #define INPUT_BUFFER_SIZE 50
+#define MESSAGE_QUEUE_SIZE 15
 
 class Display
 {
 public:
     Display();
     void loop();
+
+    static Manager *manager;
+
     static void update_display(String command);
     static void update_state();
-    static Manager *manager;
+    static void add_message(Message message);
 
 private:
     bool initialized;
     void init();
 
     Page current_page;
+    static Message message_queue[MESSAGE_QUEUE_SIZE];
+    static int message_queue_length;
 
     // TIMERS
     unsigned long last_update;
     unsigned long last_wifi_scan;
+    static long message_display_start;
 
     // WIFI
     int ssids_count;
@@ -48,6 +55,7 @@ private:
     void update_resistance();
     void update_pump();
     void update_temperature();
+    static void display_messages();
 };
 
 #endif /* SRC_DISPLAY */

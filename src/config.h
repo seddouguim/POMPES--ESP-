@@ -10,12 +10,12 @@
 // - "USER" -- no communication with the UNO, only two cycles (WARMING UP and DRAINING),
 //             with automatic resistance and pump control
 
-#define PROGRAM_MODE USER
+#define PROGRAM_MODE BENCH
 
 //? DEBUG
 #define DEBUG true
-#define DEBUG_RATIO 360
-#define DEV false
+#define DEBUG_RATIO 4000
+#define DEV true
 
 //? NETWORK
 #define MQTT_PUBLISH_INTERVAL 1000
@@ -24,9 +24,10 @@
 #define CONNECTION_TIMEOUT 10000
 
 //? ESP PINS
-#define BUZZER_PIN 13
-#define RESISTANCE_PIN 5
-#define PUMP_PIN 4
+#define BUZZER_PIN D7
+#define RESISTANCE_PIN D1
+
+#define PUMP_PIN D2
 
 //? THERMOCOUPLE PINS
 #define MAX_CLK 14
@@ -44,12 +45,14 @@ extern float RESISTANCE_CONSUMPTION;
 extern float PUMP_CONSUMPTION;
 
 //? SCREEN VARIABLES
+//* Note: After using the Serial.swap(),
+//* (RX: D7, TX: D8)
 #define ScreenRX Serial
 #define ScreenTX Serial
 #define NEXTION_END_STRING "\xff\xff\xff"
 
 //? UNO TX
-#define UNO_TX Serial1 // TX: D4, NO RX
+#define UNO_TX Serial1 // TX: D4, No RX
 
 //* COLORS
 #define GREEN 1153

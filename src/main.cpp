@@ -7,7 +7,7 @@
 
 // Cycles used by "BENCH" and "OFFICIAL" modes
 Term IDLING_TERMS[] = {
-    Term("Term 1", Duration{1, 30, 0}, Actions{.pump = TOGGLE, .resistance = AUTO}, 'A'),
+    Term("Term 1", Duration{1, 30, 0}, Actions{.pump = TOGGLE, .resistance = AUTO}),
     Term("Term 2", Duration{10, 35, 0}, Actions{.pump = OFF, .resistance = OFF}),
     Term("Term 3", Duration{1, 5, 0}, Actions{.pump = ON, .resistance = ON}, 'A'), // We send an 'A' to the UNO
 };
@@ -45,21 +45,11 @@ Manager CycleManager =
 void setup()
 {
     Serial.begin(115200);
-    delay(1000);
-
-    Serial1.begin(115200);
-    delay(1000);
-
-    // test serial 1
-    Serial1.print("<ALLLL>");
-    delay(1000);
-
+    Serial1.begin(9600);
     LittleFS.begin();
-    delay(1000);
 }
 
 void loop()
 {
     CycleManager.run();
-    ;
 }

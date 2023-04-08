@@ -2,7 +2,7 @@
 
 Manager::Manager(size_t num_cycles, Cycle *cycles)
     : num_cycles(num_cycles), cycles(cycles),
-      current_cycle(0), status(UNKNOWN_STATUS), state(State()), network(Network()), initialized(false) {}
+      current_cycle(0), status(IDLE), state(State()), network(Network()), initialized(false) {}
 
 bool Manager::is_running()
 {
@@ -45,11 +45,14 @@ void Manager::run()
     if (!this->is_running())
     {
         // if the resistance and the pump are running, we turn them off.
-        if (digitalRead(PUMP_PIN) == HIGH)
+        if (digitalRead(PUMP_PIN) == HIGH || digitalRead(RESISTANCE_PIN) == HIGH)
+        {
             digitalWrite(PUMP_PIN, LOW);
-
-        if (digitalRead(RESISTANCE_PIN) == HIGH)
             digitalWrite(RESISTANCE_PIN, LOW);
+
+            // We update the display
+            Display::update_state();
+        }
 
         return;
     }
@@ -58,6 +61,6 @@ void Manager::run()
     // We also send a reference to the state
     // If the cycle is finished, we move to the next cycle
     status = cycles[current_cycle].run(&state);
-    if (status == EventStatus::TERMINATED)
+    if (status == EventStatus::TERMINATED && this->is_running())
         current_cycle++;
 }

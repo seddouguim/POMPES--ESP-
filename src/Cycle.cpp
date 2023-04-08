@@ -34,6 +34,9 @@ EventStatus Cycle::terminate()
     current_term = 0;
     duration = 0ul;
 
+    // we play a beep to indicate that the cycle is finished
+    buzzer.play(CYCLE_BEEP_AMOUNT);
+
     return TERMINATED;
 }
 
@@ -47,14 +50,7 @@ EventStatus Cycle::verify_start_condition()
     // If the resistance is not already on, we turn it on
     // start_condition => HEATING UP (resistance on)
     if (state->resistance_state == LOW)
-    {
         digitalWrite(RESISTANCE_PIN, HIGH);
-
-        // Display the message "HEATING UP" on the display
-        // Update the display with a RED color
-        Display::update_display("main.state.pco=" + String(SALMON));
-        Display::update_display("main.state.txt=\"HEATING UP\"");
-    }
 
     // if temperature is higher than MAX_TEMPERATURE
     // we set the start_condition to false (condition is met)
@@ -65,7 +61,7 @@ EventStatus Cycle::verify_start_condition()
         return RUNNING;
     }
 
-    // We return -1 to indicate that the start condition is not met yet
+    // We return EventStatus::IDLE to indicate that the start condition is not met yet
     return IDLE;
 }
 
@@ -94,7 +90,6 @@ EventStatus Cycle::run(State *state)
     status = terms[current_term].run();
 
     // If the term is finished, we move to the next term
-    // We also call the screen update callback to display the term name
     if (status == TERMINATED)
         current_term++;
 
