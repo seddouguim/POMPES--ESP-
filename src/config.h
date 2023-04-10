@@ -14,8 +14,8 @@
 
 //? DEBUG
 #define DEBUG true
-#define DEBUG_RATIO 4000
-#define DEV true
+#define DEBUG_RATIO 360
+#define DEV false
 
 //? NETWORK
 #define MQTT_PUBLISH_INTERVAL 1000
@@ -52,7 +52,7 @@ extern float PUMP_CONSUMPTION;
 #define NEXTION_END_STRING "\xff\xff\xff"
 
 //? UNO TX
-#define UNO_TX Serial1 // TX: D4, No RX
+#define UNO_TX Serial1 // TX: D4, No RX => connected to the UNO RX (10) pin
 
 //* COLORS
 #define GREEN 1153
