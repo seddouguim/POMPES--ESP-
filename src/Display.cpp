@@ -152,7 +152,7 @@ void Display::update_temperature()
 
 void Display::update_state()
 {
-    // Check if current cycle status is not in "IDLE"
+    // Check if current cycle status is in "IDLE"
     // "IDLE" => "Warming-up"
     if (manager->get_status() == IDLE)
     {
@@ -296,17 +296,15 @@ void Display::connect_to_wifi(String credentials)
         // check if wrong password
         if (WiFi.status() == WL_CONNECT_FAILED)
         {
-            // Set status text to "Wrong password."
             update_display("wifi_creds.connecting.val=0");
             update_display("wifi_creds.status.txt=\"Wrong password.\"");
 
             return;
         }
 
-        // check if connection failed for some other reason after 10 iteration (20 seconds)
+        // check if connection failed for some other reason after 20 iteration (10 seconds)
         if (i++ > 20)
         {
-            // Set status text to "Connection failed."
             update_display("wifi_creds.connecting.val=0");
             update_display("wifi_creds.status.txt=\"Connection failed.\"");
 
@@ -315,7 +313,6 @@ void Display::connect_to_wifi(String credentials)
     }
 
     // Connection successful
-    // Set status text to "Connected!"
     update_display("wifi_creds.connecting.val=0");
     update_display("wifi_creds.status.txt=\"Connected!\"");
 
@@ -342,7 +339,7 @@ void Display::disconnect_from_wifi()
     Message msg = Message{"Disconnected from WiFi", 1};
     Display::add_message(msg);
 
-    // Clear wifi credential variables (keep the values in internal flash)
+    // Clear wifi credential variables (values are kept internal flash)
     this->manager->network.clear_wifi_credentials();
 }
 

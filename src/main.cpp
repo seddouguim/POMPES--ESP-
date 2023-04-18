@@ -30,6 +30,7 @@ Cycle cycles[] = {
 };
 
 //----------------------------------------------------------
+
 // Cycles and Terms used by "USER" mode
 Term USER_DRAINING_TERMS[] = {
     Term("AUTO", Duration{-1}, Actions{.pump = AUTO, .resistance = AUTO}),

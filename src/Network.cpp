@@ -110,9 +110,14 @@ void Network::connect_wifi()
     while (WiFi.status() != WL_CONNECTED && millis() - start_time < CONNECTION_TIMEOUT)
         delay(500);
 
-    // If we're still not connected, we return
+    // If we're still not connected, we display an error message
     if (WiFi.status() != WL_CONNECTED)
+    {
+        Message error_message{"Error connecting to WiFi!", 0};
+        Display::add_message(error_message);
+
         return;
+    }
 
     connection_attempts = 0;
     Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
@@ -133,9 +138,14 @@ void Network::connect_mqtt()
     while (!mqtt_client.connect(THING_NAME.c_str()) && millis() - start_time < CONNECTION_TIMEOUT)
         delay(500);
 
-    // AWS connection timeout
+    // AWS connection timeout, display error message
     if (!mqtt_client.connected())
+    {
+        Message error_message{"Error connecting to AWS!", 0};
+        Display::add_message(error_message);
+
         return;
+    }
 
     Message connected_message{"Connected to AWS!", 0};
     Display::add_message(connected_message);
