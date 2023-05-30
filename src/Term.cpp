@@ -28,6 +28,8 @@ void Term::init()
 
     // We compute the term's end time
     end_time = millis() + duration;
+
+    sent_tx_char = false;
 }
 
 bool Term::is_running()
@@ -46,11 +48,13 @@ EventStatus Term::terminate()
     end_time = 0;
 
     // If we're in the "BENCH" mode, we send tx_char to the UNO
-    if (PROGRAM_MODE == BENCH)
+    if (PROGRAM_MODE == BENCH && tx_char != '\n' && !sent_tx_char)
         UNO_TX.print("<" + String(tx_char) + ">");
 
     // Play a beep to indicate that the term ends
     // buzzer.play(TERM_BEEP_AMOUNT);
+
+    sent_tx_char = true;
 
     Display::update_state();
 

@@ -7,8 +7,7 @@
 // Update PROGRAM_MODE depending on which version of the program you want to run:
 // - "BENCH" -- communication with the UNO
 // - "OFFICIAL" -- no communication with the UNO
-// - "USER" -- no communication with the UNO, only two cycles (WARMING UP and DRAINING),
-//             with automatic resistance and pump control
+// - "USER" -- no communication with the UNO, only two cycles (WARMING UP and DRAINING), with automatic resistance and pump control
 
 #define PROGRAM_MODE BENCH
 
@@ -26,7 +25,6 @@
 //? ESP PINS
 #define BUZZER_PIN D7
 #define RESISTANCE_PIN D1
-
 #define PUMP_PIN D2
 
 //? THERMOCOUPLE PINS

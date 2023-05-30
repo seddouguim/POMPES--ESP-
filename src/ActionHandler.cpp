@@ -82,6 +82,8 @@ void ActionHandler::handle_pump()
         else if (state->current_temperature <= PUMP_OFF_TEMPERATURE && state->pump_state == ON)
             digitalWrite(PUMP_PIN, LOW);
 
+        if (digitalRead(RESISTANCE_PIN))
+            digitalWrite(RESISTANCE_PIN, LOW);
         break;
     }
 }

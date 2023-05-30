@@ -8,25 +8,24 @@
 // Cycles used by "BENCH" and "OFFICIAL" modes
 Term IDLING_TERMS[] = {
     Term("Term 1", Duration{1, 30, 0}, Actions{.pump = TOGGLE, .resistance = AUTO}),
-    Term("Term 2", Duration{10, 35, 0}, Actions{.pump = OFF, .resistance = OFF}),
-    Term("Term 3", Duration{1, 5, 0}, Actions{.pump = ON, .resistance = ON}, 'A'), // We send an 'A' to the UNO
+    Term("Term 2", Duration{10, 5, 0}, Actions{.pump = OFF, .resistance = OFF}),
+    Term("Term 3", Duration{0, 30, 0}, Actions{.pump = ON, .resistance = ON}, 'A'), // We send an 'A' to the UNO
 };
 
 Term DRAINING_TERMS[] = {
     Term("Term 1", Duration{15, 30, 34}, Actions{.pump = AUTO, .resistance = AUTO}),
-    Term("Term 2", Duration{8, 29, 26}, Actions{.pump = OFF, .resistance = OFF}),
+    Term("Term 2", Duration{8, 29, 26}, Actions{.pump = OFF, .resistance = AUTO}),
 };
 
 Term V_40_TERMS[] = {
     Term("Term 1", Duration{11, 35, 0}, Actions{.pump = AUTO, .resistance = AUTO}),
-    Term("Term 2", Duration{0, 30, 0}, Actions{.pump = ON, .resistance = ON}),
-    Term("Term 3", Duration{0, 45, 0}, Actions{.pump = OFF, .resistance = OFF}, 'B'), // We send a 'B' to the UNO
+    Term("Term 2", Duration{0, 30, 0}, Actions{.pump = ON, .resistance = ON}, 'B'), // We send a 'B' to the UNO
 };
 
 Cycle cycles[] = {
     Cycle("IDLING", 3, IDLING_TERMS, true), // We set the start condition to true (WARMING UP)
     Cycle("DRAINING", 2, DRAINING_TERMS),
-    Cycle("V40", 3, V_40_TERMS),
+    Cycle("V40", 2, V_40_TERMS),
 };
 
 //----------------------------------------------------------
@@ -48,6 +47,11 @@ void setup()
     Serial.begin(115200);
     Serial1.begin(9600);
     LittleFS.begin();
+
+    delay(500);
+
+    // Send reset signal to NANO
+    UNO_TX.write("<RESET>");
 }
 
 void loop()

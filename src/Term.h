@@ -28,6 +28,7 @@ private:
     // The tx_char is the character that will be sent to the serial port connected to the UNO.
     // This only applies when in the mode: "BENCH"
     char tx_char;
+    bool sent_tx_char;
 
     void init() override;
     EventStatus terminate();
