@@ -51,7 +51,7 @@ void setup()
     delay(500);
 
     // Send reset signal to NANO
-    UNO_TX.write("<RESET>");
+    UNO_TX.print("<RESET>");
 }
 
 void loop()

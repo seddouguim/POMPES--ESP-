@@ -2,10 +2,10 @@
 #define SRC_MANAGER
 
 #include <Arduino.h>
-#include "State.h"
 #include "Cycle.h"
 #include "Network.h"
 #include "Display.h"
+#include "State.h"
 
 class Manager
 {
@@ -13,6 +13,9 @@ public:
     Manager(size_t num_cycles, Cycle *cycles);
     void run();
     EventStatus get_status();
+
+    String get_current_cycle();
+    String get_current_term();
 
 private:
     size_t num_cycles;

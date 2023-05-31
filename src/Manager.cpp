@@ -14,6 +14,16 @@ EventStatus Manager::get_status()
     return status;
 }
 
+String Manager::get_current_cycle()
+{
+    return this->cycles[current_cycle].get_name();
+}
+
+String Manager::get_current_term()
+{
+    return this->cycles[current_cycle].get_term_name();
+}
+
 void Manager::init()
 {
     if (initialized)
@@ -31,7 +41,7 @@ void Manager::run()
     state.update();
 
     // We run the display loop
-    // display.loop();
+    display.loop();
 
     // We run the network loop
     network.loop(&state);
