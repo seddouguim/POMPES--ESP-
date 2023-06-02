@@ -76,14 +76,19 @@ void ActionHandler::handle_pump()
         break;
 
     case AUTO:
-        if (state->current_temperature >= PUMP_ON_TEMPERATURE && state->pump_state == OFF)
-            digitalWrite(PUMP_PIN, HIGH);
-
-        else if (state->current_temperature <= PUMP_OFF_TEMPERATURE && state->pump_state == ON)
-            digitalWrite(PUMP_PIN, LOW);
 
         if (digitalRead(RESISTANCE_PIN))
-            digitalWrite(RESISTANCE_PIN, LOW);
+            digitalWrite(PUMP_PIN, LOW);
+
+        else
+        {
+            if (state->current_temperature >= PUMP_ON_TEMPERATURE && state->pump_state == OFF)
+                digitalWrite(PUMP_PIN, HIGH);
+
+            else if (state->current_temperature <= PUMP_OFF_TEMPERATURE && state->pump_state == ON)
+                digitalWrite(PUMP_PIN, LOW);
+        }
+
         break;
     }
 }

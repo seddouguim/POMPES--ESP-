@@ -18,7 +18,7 @@ Term DRAINING_TERMS[] = {
 };
 
 Term V_40_TERMS[] = {
-    Term("Term 1", Duration{11, 35, 0}, Actions{.pump = AUTO, .resistance = AUTO}),
+    Term("Term 1", Duration{11, 35, 0}, Actions{.pump = OFF, .resistance = AUTO}),
     Term("Term 2", Duration{0, 30, 0}, Actions{.pump = ON, .resistance = ON}, 'B'), // We send a 'B' to the UNO
 };
 
@@ -50,7 +50,7 @@ void setup()
 
     delay(500);
 
-    // Send reset signal to NANO
+    // Send reset signal to UNO
     UNO_TX.print("<RESET>");
 }
 

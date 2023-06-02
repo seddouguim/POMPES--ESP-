@@ -26,7 +26,7 @@ private:
     unsigned long last_update;
 
     //* TODO: GET CUID FROM EEPROM
-    String CUID = "test-cuid";
+    String CUID = "cuid-01";
 
     float current_temperature;
     float previous_temperature;

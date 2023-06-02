@@ -5,12 +5,15 @@ Network::Network()
     : initialized(false), state(nullptr), wifi_client(), mqtt_client(wifi_client),
       cert(AWS_CERT_CA), client_crt(AWS_CERT_CRT), key(AWS_CERT_PRIVATE)
 {
+    // WIFI_ssid = "UPC3404214";
+    // WIFI_password = "Y66aedjtudhw";
+
     WIFI_ssid = "";
     WIFI_password = "";
 
     connection_attempts = 0;
 
-    THING_NAME = "ESP8266";
+    THING_NAME = "ESP01";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";
 
     SHADOW_UPDATE_TOPIC = "$aws/things/" + THING_NAME + "/shadow/update";
@@ -42,7 +45,10 @@ void Network::init()
 
 void Network::get_wifi_credentials()
 {
-    // Get wifi credentials from file (if they exist)
+    if (WIFI_ssid != "")
+        return;
+
+    // Get wifi credentials from config file
     File file = LittleFS.open("/wifi/config.txt", "r");
     if (file)
     {
