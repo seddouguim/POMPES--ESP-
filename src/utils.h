@@ -49,6 +49,8 @@ typedef struct Buzzer
 
         pinMode(BUZZER_PIN, OUTPUT);
 
+        // Serial.println("Initialized buzzer.");
+
         frequency = 1000;
         duration = 100;
 

@@ -26,16 +26,20 @@ void Cycle::init()
 
     // Play a beep to indicate that the cycle starts
     buzzer.play(CYCLE_BEEP_AMOUNT);
+    // Serial.println("Buzzer from Cycle_init.");
 }
 
 EventStatus Cycle::terminate()
 {
-    // We re-initialize the cycle
-    current_term = 0;
+
+    if (status)
+        // We re-initialize the cycle
+        current_term = 0;
     duration = 0ul;
 
     // we play a beep to indicate that the cycle is finished
     buzzer.play(CYCLE_BEEP_AMOUNT);
+    // Serial.println("Buzzer from Cycle_terminate.");
 
     return TERMINATED;
 }

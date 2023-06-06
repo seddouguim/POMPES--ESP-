@@ -77,7 +77,7 @@ void ActionHandler::handle_pump()
 
     case AUTO:
 
-        if (digitalRead(RESISTANCE_PIN))
+        if (state->resistance_state == ON)
             digitalWrite(PUMP_PIN, LOW);
 
         else

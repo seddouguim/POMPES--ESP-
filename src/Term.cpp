@@ -17,6 +17,7 @@ void Term::init()
 
     // Play a beep to indicate that the term starts
     buzzer.play(TERM_BEEP_AMOUNT);
+    // Serial.println("Buzzer from Term_init");
 
     // check if duration is set to -1
     // if so, the term will run indefinitely

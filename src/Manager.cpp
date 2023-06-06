@@ -55,6 +55,8 @@ void Manager::run()
 
             Display::update_state();
         }
+
+        return;
     }
 
     status = cycles[current_cycle].run(&state);
