@@ -2,10 +2,13 @@
 
 Manager::Manager(size_t num_cycles, Cycle *cycles)
     : num_cycles(num_cycles), cycles(cycles),
-      current_cycle(0), status(IDLE), state(State()), network(Network()), initialized(false) {}
+      current_cycle(-1), status(IDLE), state(State()), network(Network()), initialized(false) {}
 
 bool Manager::is_running()
 {
+    if (current_cycle < 0)
+        return false;
+
     return current_cycle < num_cycles;
 }
 
@@ -38,6 +41,8 @@ void Manager::init()
 {
     if (initialized)
         return;
+
+    current_cycle = 0;
 
     Display::manager = this;
     initialized = true;
