@@ -32,17 +32,11 @@ void Cycle::init()
 EventStatus Cycle::terminate()
 {
 
-    // We re-initialize the cycle
-    if (status)
-    {
-        current_term = 0;
-        duration = 0ul;
-    }
+    current_term = -1;
+    duration = 0ul;
 
     // we play a beep to indicate that the cycle is finished
     buzzer.play(CYCLE_BEEP_AMOUNT);
-
-    Serial.println(F("Cycle finished: ") + name);
 
     Display::update_state();
 

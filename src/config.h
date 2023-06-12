@@ -12,7 +12,7 @@
 #define PROGRAM_MODE BENCH
 
 //? DEBUG
-#define DEBUG true
+#define DEBUG false
 #define DEBUG_RATIO 360
 #define DEV false
 
