@@ -26,7 +26,6 @@ void Cycle::init()
 
     // Play a beep to indicate that the cycle starts
     buzzer.play(CYCLE_BEEP_AMOUNT);
-    Serial.println(F("Cycle started: ") + name);
 }
 
 EventStatus Cycle::terminate()

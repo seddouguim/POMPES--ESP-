@@ -63,9 +63,12 @@ void Manager::run()
             digitalWrite(PUMP_PIN, LOW);
             digitalWrite(RESISTANCE_PIN, LOW);
 
-            Display::update_state();
             this->state.current_cycle = "TERMINATED";
-            this->state.current_term = "";
+            this->state.current_term = "N/A";
+
+            current_cycle = -1;
+
+            Display::update_state();
         }
 
         return;
