@@ -30,6 +30,9 @@ void State::init()
     pump_kwh = 0;
     resistance_kwh = 0;
 
+    current_cycle = "";
+    current_term = "";
+
     last_update = 0;
 
     pinMode(RESISTANCE_PIN, OUTPUT);
@@ -78,6 +81,8 @@ char *State::get_state_json()
     doc["resistance_on_time_total"] = resistance_on_time_total;
     doc["pump_kwh"] = pump_kwh;
     doc["resistance_kwh"] = resistance_kwh;
+    doc["current_cycle"] = current_cycle;
+    doc["current_term"] = current_term;
 
     static char state_json[JSON_BUFFER_SIZE];
     serializeJson(doc, state_json);
@@ -94,6 +99,8 @@ char *State::get_shadow_update_document()
     doc["state"]["reported"]["pump_state"] = pump_state;
     doc["state"]["reported"]["pump_kwh"] = pump_kwh;
     doc["state"]["reported"]["resistance_kwh"] = resistance_kwh;
+    doc["state"]["reported"]["current_cycle"] = current_cycle;
+    doc["state"]["reported"]["current_term"] = current_term;
 
     static char shadow_update_document[JSON_BUFFER_SIZE];
     serializeJson(doc, shadow_update_document);

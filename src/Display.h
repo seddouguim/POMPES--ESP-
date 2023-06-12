@@ -56,6 +56,7 @@ private:
     void update_pump();
     void update_temperature();
     static void display_messages();
+    void update_cycle_page();
 };
 
 #endif /* SRC_DISPLAY */

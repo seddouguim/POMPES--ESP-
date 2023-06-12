@@ -35,6 +35,7 @@ void Network::init()
     wifi_client.setClientRSACert(&client_crt, &key);
 
     mqtt_client.setServer(MQTT_HOST.c_str(), 8883);
+    mqtt_client.setBufferSize(384);
 
     AWS_IOT_PUBLISH_TOPIC = "dt/sensors/" + String(state->CUID);
     AWS_IOT_SUBSCRIBE_TOPIC = "dt/sensors/" + String(state->CUID) + "/sub";
@@ -187,9 +188,21 @@ void Network::publish_database_message()
     if (millis() - last_database_publish_time < MQTT_DATABASE_PUBLISH_INTERVAL && last_database_publish_time != 0ul)
         return;
 
-    // Publish an MQTT message for database
+    // Publish an MQTT message for the database
     String topic = "database/" + AWS_IOT_PUBLISH_TOPIC;
-    mqtt_client.publish(topic.c_str(), state->get_state_json());
+    bool response = mqtt_client.publish(topic.c_str(), state->get_state_json());
+
+    if (!response)
+    {
+        // Print the error message if publishing fails
+        Serial.println("Failed to publish to db, topic: " + topic);
+        Serial.println("Error: " + String(mqtt_client.state()));
+    }
+
+    else
+    {
+        // Serial.println("Published to db, topic: " + topic);
+    }
 
     last_database_publish_time = millis();
 }

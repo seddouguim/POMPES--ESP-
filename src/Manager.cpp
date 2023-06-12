@@ -24,6 +24,16 @@ String Manager::get_current_term()
     return this->cycles[current_cycle].get_term_name();
 }
 
+unsigned long Manager::get_current_cycle_duration()
+{
+    return cycles[current_cycle].get_duration();
+}
+
+unsigned long Manager::get_current_term_duration()
+{
+    return cycles[current_cycle].get_term_duration();
+}
+
 void Manager::init()
 {
     if (initialized)
@@ -54,6 +64,8 @@ void Manager::run()
             digitalWrite(RESISTANCE_PIN, LOW);
 
             Display::update_state();
+            this->state.current_cycle = "TERMINATED";
+            this->state.current_term = "";
         }
 
         return;

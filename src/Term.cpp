@@ -57,8 +57,6 @@ EventStatus Term::terminate()
 
     sent_tx_char = true;
 
-    Display::update_state();
-
     return TERMINATED;
 }
 

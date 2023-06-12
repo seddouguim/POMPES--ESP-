@@ -32,14 +32,18 @@ void Cycle::init()
 EventStatus Cycle::terminate()
 {
 
+    // We re-initialize the cycle
     if (status)
-        // We re-initialize the cycle
+    {
         current_term = 0;
-    duration = 0ul;
+        duration = 0ul;
+    }
 
     // we play a beep to indicate that the cycle is finished
     buzzer.play(CYCLE_BEEP_AMOUNT);
     // Serial.println("Buzzer from Cycle_terminate.");
+
+    Display::update_state();
 
     return TERMINATED;
 }
@@ -47,6 +51,11 @@ EventStatus Cycle::terminate()
 String Cycle::get_term_name()
 {
     return terms[current_term].get_name();
+}
+
+unsigned long Cycle::get_term_duration()
+{
+    return terms[current_term].get_duration();
 }
 
 EventStatus Cycle::verify_start_condition()
@@ -69,11 +78,26 @@ EventStatus Cycle::verify_start_condition()
     return IDLE;
 }
 
+void Cycle::update_state()
+{
+    if (start_condition)
+        this->state->current_cycle = "HEATING UP";
+
+    else
+    {
+        this->state->current_cycle = this->get_name();
+        this->state->current_term = this->get_term_name();
+    }
+}
+
 EventStatus Cycle::run(State *state)
 {
     // If state is nullptr, we save a reference to the State
     if (this->state == nullptr)
         this->state = state;
+
+    // We update the current_term and current_cycle in the state object.
+    update_state();
 
     // We check if start condition is met
     // If not, we return -1

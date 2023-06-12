@@ -17,4 +17,9 @@ String Event::get_name()
     return name;
 }
 
+unsigned long Event::get_duration()
+{
+    return duration;
+}
+
 Buzzer Event::buzzer = Buzzer();

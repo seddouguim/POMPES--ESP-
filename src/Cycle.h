@@ -14,6 +14,7 @@ public:
 
     EventStatus run(State *state);
     String get_term_name();
+    unsigned long get_term_duration();
 
 private:
     Term *terms;
@@ -38,6 +39,7 @@ private:
     void init() override;
     EventStatus terminate();
     bool is_running();
+    void update_state();
 };
 
 #endif /* SRC_CYCLE */

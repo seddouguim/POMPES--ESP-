@@ -32,6 +32,20 @@ void Display::init()
     update_display("vis 17,0");
     update_display("main.wifi.pic=" + String(WIFI_DISCONNECTED_PIC));
 
+    update_display("cycles.cycle.txt=\"Heating up\"");
+    update_display("cycles.term.txt=\"\"");
+
+    update_display("cycles.c_normal.txt=\"00h:00m:00s\"");
+    update_display("cycles.c_speed.txt=\"00h:00m:00s\"");
+    update_display("cycles.t_normal.txt=\"00h:00m:00s\"");
+    update_display("cycles.t_speed.txt=\"00h:00m:00s\"");
+
+    update_display("cycles.c_n.val=0");
+    update_display("cycles.c_s.val=0");
+
+    update_display("cycles.t_n.val=0");
+    update_display("cycles.t_s.val=0");
+
     current_page = main;
     current_ssids_page = 0;
     ssids_count = -2;
@@ -152,6 +166,9 @@ void Display::update_temperature()
 
 void Display::update_state()
 {
+    static String previous_cycle = "\n";
+    static String previous_term = "\n";
+
     // Check if current cycle status is in "IDLE"
     // "IDLE" => "Warming-up"
     if (manager->get_status() == IDLE)
@@ -171,16 +188,55 @@ void Display::update_state()
         update_display("main.state.txt=\"TERMINATED!\"");
         update_display("main.state.pco=" + String(LIGHTGREEN));
 
+        update_display("cycles.c_s.val=0");
+        update_display("cycles.t_s.val=0");
+
+        update_display("cycles.cycle.txt=\"Terminated!\"");
+        update_display("cycles.term.txt=\"\"");
+
         return;
     }
 
-    String cycle = manager->cycles[manager->current_cycle].get_name();
-    String term = manager->cycles[manager->current_cycle].get_term_name();
+    String cycle = manager->get_current_cycle();
+    String term = manager->get_current_term();
+
+    previous_cycle = cycle;
+    previous_term = term;
+
+    if (previous_cycle == "V40" && previous_term == "Term 2")
+        return;
+
+    // s_ SPEED
+    unsigned long s_cycle_duration = manager->get_current_cycle_duration();
+    unsigned long s_term_duration = manager->get_current_term_duration();
+
+    // n_ NORMAL
+    unsigned long n_cycle_duration = DEBUG ? s_cycle_duration * DEBUG_RATIO : s_cycle_duration;
+    unsigned long n_term_duration = DEBUG ? s_term_duration * DEBUG_RATIO : s_term_duration;
 
     // We update the screen with the cycle and term name
     // @color: SKYBLUE
     update_display("main.state.txt=\"" + cycle + " - " + term + "\"");
     update_display("main.state.pco=" + String(SKYBLUE));
+
+    update_display("cycles.cycle.txt=\"" + cycle + "\"");
+    update_display("cycles.term.txt=\"" + term + "\"");
+
+    // We also update the cycle information page to display the timings and time left.
+    // First, we check if this is a new cycle or a new term (new cycle: "Term 1")
+    if (term == "Term 1")
+    {
+        update_display("cycles.c_n.val=" + String(n_cycle_duration));
+        update_display("cycles.c_s.val=" + String(s_cycle_duration));
+
+        update_display("cycles.t_n.val=" + String(n_term_duration));
+        update_display("cycles.t_s.val=" + String(s_term_duration));
+    }
+    else
+    {
+        update_display("cycles.t_n.val=" + String(n_term_duration));
+        update_display("cycles.t_s.val=" + String(s_term_duration));
+    }
 }
 
 void Display::update_display(String command)
@@ -467,4 +523,10 @@ void Display::loop()
     display_messages();
 
     last_update = millis();
+}
+
+void Display::update_cycle_page()
+{
+    String cycle = manager->cycles[manager->current_cycle].get_name();
+    String term = manager->cycles[manager->current_cycle].get_term_name();
 }

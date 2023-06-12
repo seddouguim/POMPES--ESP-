@@ -47,6 +47,9 @@ private:
     float pump_kwh;
     float resistance_kwh;
 
+    String current_cycle;
+    String current_term;
+
     void calculate_kws();
 
     void pump_kw();

@@ -17,6 +17,9 @@ public:
     String get_current_cycle();
     String get_current_term();
 
+    unsigned long get_current_cycle_duration();
+    unsigned long get_current_term_duration();
+
 private:
     size_t num_cycles;
     Cycle *cycles;

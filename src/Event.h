@@ -9,6 +9,7 @@ class Event
 public:
     Event(String name, Duration duration);
     String get_name();
+    unsigned long get_duration();
 
 private:
     String name;
