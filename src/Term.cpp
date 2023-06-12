@@ -31,6 +31,8 @@ void Term::init()
     end_time = millis() + duration;
 
     sent_tx_char = false;
+
+    Serial.println(F("Term started: ") + name);
 }
 
 bool Term::is_running()
@@ -54,6 +56,8 @@ EventStatus Term::terminate()
 
     // Play a beep to indicate that the term ends
     // buzzer.play(TERM_BEEP_AMOUNT);
+
+    Serial.println(F("Term ended: ") + name);
 
     sent_tx_char = true;
 

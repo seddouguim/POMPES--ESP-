@@ -13,7 +13,7 @@
 
 //? DEBUG
 #define DEBUG true
-#define DEBUG_RATIO 90
+#define DEBUG_RATIO 360
 #define DEV false
 
 //? NETWORK
