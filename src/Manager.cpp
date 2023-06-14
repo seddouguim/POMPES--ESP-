@@ -63,18 +63,25 @@ void Manager::run()
 
     if (!this->is_running())
     {
+
         if (digitalRead(PUMP_PIN) == HIGH || digitalRead(RESISTANCE_PIN) == HIGH)
         {
             digitalWrite(PUMP_PIN, LOW);
             digitalWrite(RESISTANCE_PIN, LOW);
-
-            this->state.current_cycle = "TERMINATED";
-            this->state.current_term = "N/A";
-
-            current_cycle = -1;
-
-            Display::update_state();
         }
+
+        if (this->state.current_cycle == "TERMINATED")
+            return;
+
+        this->state.current_cycle = "TERMINATED";
+        this->state.current_term = "N/A";
+
+        this->state.current_cycle_duration = 0;
+        this->state.current_term_duration = 0;
+
+        current_cycle = -1;
+
+        Display::update_state();
 
         return;
     }

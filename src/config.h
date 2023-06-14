@@ -12,8 +12,8 @@
 #define PROGRAM_MODE BENCH
 
 //? DEBUG
-#define DEBUG false
-#define DEBUG_RATIO 360
+#define DEBUG true
+#define DEBUG_RATIO 75
 #define DEV false
 
 //? NETWORK

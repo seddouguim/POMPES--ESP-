@@ -31,13 +31,14 @@ void Cycle::init()
 EventStatus Cycle::terminate()
 {
 
-    current_term = -1;
+    current_term = 0;
     duration = 0ul;
 
     // we play a beep to indicate that the cycle is finished
     buzzer.play(CYCLE_BEEP_AMOUNT);
 
-    Display::update_state();
+    if (name == "V40")
+        Display::update_state();
 
     return TERMINATED;
 }
@@ -75,13 +76,16 @@ EventStatus Cycle::verify_start_condition()
 void Cycle::update_state()
 {
     if (start_condition)
-        this->state->current_cycle = "HEATING UP";
-
-    else
     {
-        this->state->current_cycle = this->get_name();
-        this->state->current_term = this->get_term_name();
+        this->state->current_cycle = "HEATING UP";
+        return;
     }
+
+    this->state->current_cycle = this->get_name();
+    this->state->current_term = this->get_term_name();
+
+    this->state->current_cycle_duration = this->get_duration();
+    this->state->current_term_duration = this->get_term_duration();
 }
 
 EventStatus Cycle::run(State *state)
@@ -110,6 +114,8 @@ EventStatus Cycle::run(State *state)
 
     // We run the current term and save the status
     status = terms[current_term].run();
+
+    update_duration();
 
     // If the term is finished, we move to the next term
     if (status == TERMINATED)

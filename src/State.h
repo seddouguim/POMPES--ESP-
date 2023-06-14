@@ -50,6 +50,9 @@ private:
     String current_cycle;
     String current_term;
 
+    unsigned long current_cycle_duration;
+    unsigned long current_term_duration;
+
     void calculate_kws();
 
     void pump_kw();

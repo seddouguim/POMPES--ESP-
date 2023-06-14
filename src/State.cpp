@@ -101,6 +101,8 @@ char *State::get_shadow_update_document()
     doc["state"]["reported"]["resistance_kwh"] = resistance_kwh;
     doc["state"]["reported"]["current_cycle"] = current_cycle;
     doc["state"]["reported"]["current_term"] = current_term;
+    doc["state"]["reported"]["current_term_duration"] = current_term_duration;
+    doc["state"]["reported"]["current_cycle_duration"] = current_cycle_duration;
 
     static char shadow_update_document[JSON_BUFFER_SIZE];
     serializeJson(doc, shadow_update_document);

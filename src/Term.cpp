@@ -72,6 +72,8 @@ EventStatus Term::run()
     if (!end_time)
         init();
 
+    update_duration();
+
     // if the term is not running, we return false
     // This means that the term is finished
     // The cycle will then move to the next term

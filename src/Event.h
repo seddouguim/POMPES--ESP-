@@ -19,6 +19,9 @@ private:
     virtual void init();
     bool initialized;
 
+    unsigned long last_duration_update;
+    void update_duration();
+
     static Buzzer buzzer;
 
     friend class Cycle;
