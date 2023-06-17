@@ -19,22 +19,12 @@ EventStatus Manager::get_status()
 
 String Manager::get_current_cycle()
 {
-    return this->cycles[current_cycle].get_name();
+    return state.current_cycle;
 }
 
 String Manager::get_current_term()
 {
-    return this->cycles[current_cycle].get_term_name();
-}
-
-unsigned long Manager::get_current_cycle_duration()
-{
-    return cycles[current_cycle].get_duration();
-}
-
-unsigned long Manager::get_current_term_duration()
-{
-    return cycles[current_cycle].get_term_duration();
+    return state.current_term;
 }
 
 void Manager::init()

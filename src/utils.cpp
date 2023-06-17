@@ -30,5 +30,11 @@ Page get_page(String page)
     if (page == "SETTINGS")
         return SETTINGS;
 
+    if (page == "ENERGY")
+        return ENERGY;
+
+    if (page == "CYCLES")
+        return CYCLES;
+
     return UNKNOWN_PAGE;
 }

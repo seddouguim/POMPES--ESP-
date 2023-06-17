@@ -32,13 +32,13 @@ void Display::init()
     update_display("vis 17,0");
     update_display("main.wifi.pic=" + String(WIFI_DISCONNECTED_PIC));
 
-    update_display("cycles.cycle.txt=\"Heating up\"");
-    update_display("cycles.term.txt=\"\"");
+    update_display("cycles.cycle.txt=\"N/A\"");
+    update_display("cycles.term.txt=\"N/A\"");
 
-    update_display("cycles.c_normal.txt=\"00h:00m:00s\"");
-    update_display("cycles.c_speed.txt=\"00h:00m:00s\"");
-    update_display("cycles.t_normal.txt=\"00h:00m:00s\"");
-    update_display("cycles.t_speed.txt=\"00h:00m:00s\"");
+    update_display("cycles.c_normal.txt=\"00:00:00\"");
+    update_display("cycles.c_speed.txt=\"00:00:00\"");
+    update_display("cycles.t_normal.txt=\"00:00:00\"");
+    update_display("cycles.t_speed.txt=\"00:00:00\"");
 
     update_display("cycles.c_n.val=0");
     update_display("cycles.c_s.val=0");
@@ -473,19 +473,112 @@ void Display::loop()
     if (millis() - last_update < 1000)
         return;
 
+    last_update = millis();
+
     // Only update temperature on main page to  avoid flickering on other pages
     if (current_page == main)
         update_temperature();
 
+    if (current_page == CYCLES)
+        update_cycle_page();
+
+    if (current_page == ENERGY)
+        update_energy_page();
+
     update_pump();
     update_resistance();
     display_messages();
+}
 
-    last_update = millis();
+void Display::update_energy_page()
+{
+    float total_daily_energy = manager->state.daily_pump_kwh + manager->state.daily_resistance_kwh;
+    float total_monthly_energy = manager->state.monthly_pump_kwh + manager->state.monthly_resistance_kwh;
+
+    update_display("energy.today.txt=\"" + String(total_daily_energy) + " KWh\"");
+    update_display("energy.month.txt=\"" + String(total_monthly_energy) + " KWh\"");
 }
 
 void Display::update_cycle_page()
 {
-    String cycle = manager->cycles[manager->current_cycle].get_name();
-    String term = manager->cycles[manager->current_cycle].get_term_name();
+    String cycle = manager->get_current_cycle();
+    String term = manager->get_current_term();
+
+    update_display("cycles.cycle.txt=\"" + cycle + "\"");
+    update_display("cycles.term.txt=\"" + term + "\"");
+
+    if (cycle == "HEATING UP" || cycle == "TERMINATED")
+        return;
+
+    unsigned long cycle_timer = manager->cycles[manager->current_cycle].get_timer();
+    unsigned long cycle_s_timer = manager->cycles[manager->current_cycle].get_s_timer();
+
+    unsigned long term_timer = manager->cycles[manager->current_cycle].get_term_timer();
+    unsigned long term_s_timer = manager->cycles[manager->current_cycle].get_term_s_timer();
+
+    // Convert cycle_timer to HH:MM:SS format
+    unsigned long cycle_hours = cycle_timer / 3600000;        // 1 hour = 60 mins * 60 secs * 1000 ms
+    unsigned long cycle_minutes = (cycle_timer / 60000) % 60; // 1 min = 60 secs * 1000 ms
+    unsigned long cycle_seconds = (cycle_timer / 1000) % 60;  // 1 sec = 1000 ms
+    String cycle_timer_str = "";
+    if (cycle_hours < 10)
+        cycle_timer_str += "0";
+    cycle_timer_str += String(cycle_hours) + ":";
+    if (cycle_minutes < 10)
+        cycle_timer_str += "0";
+    cycle_timer_str += String(cycle_minutes) + ":";
+    if (cycle_seconds < 10)
+        cycle_timer_str += "0";
+    cycle_timer_str += String(cycle_seconds);
+
+    // Convert cycle_s_timer to HH:MM:SS format
+    unsigned long cycle_s_hours = cycle_s_timer / 3600000;        // 1 hour = 60 mins * 60 secs * 1000 ms
+    unsigned long cycle_s_minutes = (cycle_s_timer / 60000) % 60; // 1 min = 60 secs * 1000 ms
+    unsigned long cycle_s_seconds = (cycle_s_timer / 1000) % 60;  // 1 sec = 1000 ms
+    String cycle_s_timer_str = "";
+    if (cycle_s_hours < 10)
+        cycle_s_timer_str += "0";
+    cycle_s_timer_str += String(cycle_s_hours) + ":";
+    if (cycle_s_minutes < 10)
+        cycle_s_timer_str += "0";
+    cycle_s_timer_str += String(cycle_s_minutes) + ":";
+    if (cycle_s_seconds < 10)
+        cycle_s_timer_str += "0";
+    cycle_s_timer_str += String(cycle_s_seconds);
+
+    // Convert term_timer to HH:MM:SS format
+    unsigned long term_hours = term_timer / 3600000;        // 1 hour = 60 mins * 60 secs * 1000 ms
+    unsigned long term_minutes = (term_timer / 60000) % 60; // 1 min = 60 secs * 1000 ms
+    unsigned long term_seconds = (term_timer / 1000) % 60;  // 1 sec = 1000 ms
+    String term_timer_str = "";
+    if (term_hours < 10)
+        term_timer_str += "0";
+    term_timer_str += String(term_hours) + ":";
+    if (term_minutes < 10)
+        term_timer_str += "0";
+    term_timer_str += String(term_minutes) + ":";
+    if (term_seconds < 10)
+        term_timer_str += "0";
+    term_timer_str += String(term_seconds);
+
+    // Convert term_s_timer to HH:MM:SS format
+    unsigned long term_s_hours = term_s_timer / 3600000;        // 1 hour = 60 mins * 60 secs * 1000 ms
+    unsigned long term_s_minutes = (term_s_timer / 60000) % 60; // 1 min = 60 secs * 1000 ms
+    unsigned long term_s_seconds = (term_s_timer / 1000) % 60;  // 1 sec = 1000 ms
+    String term_s_timer_str = "";
+    if (term_s_hours < 10)
+        term_s_timer_str += "0";
+    term_s_timer_str += String(term_s_hours) + ":";
+    if (term_s_minutes < 10)
+        term_s_timer_str += "0";
+    term_s_timer_str += String(term_s_minutes) + ":";
+    if (term_s_seconds < 10)
+        term_s_timer_str += "0";
+    term_s_timer_str += String(term_s_seconds);
+
+    update_display("cycles.c_normal.txt=\"" + cycle_timer_str + "\"");
+    update_display("cycles.c_speed.txt=\"" + cycle_s_timer_str + "\"");
+
+    update_display("cycles.t_normal.txt=\"" + term_timer_str + "\"");
+    update_display("cycles.t_speed.txt=\"" + term_s_timer_str + "\"");
 }

@@ -94,6 +94,8 @@ enum Page
     WIFI_LIST,
     WIFI_CREDS,
     SETTINGS,
+    ENERGY,
+    CYCLES,
     UNKNOWN_PAGE
 };
 

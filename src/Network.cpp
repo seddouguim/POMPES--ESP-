@@ -2,14 +2,18 @@
 #include "Display.h"
 
 Network::Network()
-    : initialized(false), state(nullptr), wifi_client(), mqtt_client(wifi_client),
+    : initialized(false), state(nullptr), wifi_client(), http_client(), mqtt_client(wifi_client),
       cert(AWS_CERT_CA), client_crt(AWS_CERT_CRT), key(AWS_CERT_PRIVATE)
 {
-    // WIFI_ssid = "UPC3404214";
-    // WIFI_password = "Y66aedjtudhw";
 
     WIFI_ssid = "";
     WIFI_password = "";
+
+    // WIFI_ssid = "UPC3404214";
+    // WIFI_password = "Y66aedjtudhw";
+
+    // WIFI_ssid = "UPC2703909";
+    // WIFI_password = "nxkVF7ksvt8j";
 
     connection_attempts = 0;
 
@@ -24,6 +28,8 @@ Network::Network()
 
     last_live_publish_time = 0ul;
     last_database_publish_time = 0ul;
+
+    consumption_data = false;
 }
 
 void Network::init()
@@ -108,8 +114,6 @@ void Network::connect_wifi()
     unsigned long start_time = millis();
 
     // If we're not connected, we try to connect
-    // nxkVF7ksvt8j
-    // UPC2703909
     WiFi.mode(WIFI_STA);
     WiFi.begin(this->WIFI_ssid, this->WIFI_password);
 
@@ -201,10 +205,22 @@ void Network::publish_database_message()
 
     else
     {
-        // Serial.println("Published to db, topic: " + topic);
-    }
+        // Reset energy consumption counters if they were published with a value > 0
+        if (state->pump_kwh > 0 || state->resistance_kwh > 0)
+        {
 
-    last_database_publish_time = millis();
+            state->daily_pump_kwh += state->pump_kwh;
+            state->monthly_pump_kwh += state->pump_kwh;
+
+            state->daily_resistance_kwh += state->resistance_kwh;
+            state->monthly_resistance_kwh += state->resistance_kwh;
+
+            state->pump_kwh = 0;
+            state->resistance_kwh = 0;
+        }
+
+        last_database_publish_time = millis();
+    }
 }
 
 void Network::get_time(void)
@@ -223,6 +239,97 @@ void Network::get_time(void)
 
     struct tm timeinfo;
     gmtime_r(&now, &timeinfo);
+}
+
+void Network::get_consumption_data()
+{
+    if (consumption_data)
+        return;
+
+    const char *host = "auth.daguok88djgu8.amplifyapp.com";
+    const int httpsPort = 443;
+    const char *endpoint = "/api/db/power";
+
+    if (!wifi_client.connect(host, httpsPort))
+    {
+        Serial.println("Failed to connect to API");
+        consumption_data = true;
+        return;
+    }
+
+    // Send HTTP GET request
+    wifi_client.print(String("GET ") + endpoint + " HTTP/1.1\r\n" +
+                      "Host: " + host + "\r\n" +
+                      "Connection: close\r\n\r\n");
+
+    // Read and parse response
+    String payload = "{}";
+    bool http_response_started = false;
+    int http_response_code = -1;
+
+    while (wifi_client.connected())
+    {
+        String line = wifi_client.readStringUntil('\n');
+
+        if (!http_response_started)
+        {
+            if (line.startsWith("HTTP/1.1"))
+            {
+                http_response_started = true;
+                http_response_code = line.substring(9, 12).toInt();
+            }
+        }
+        else
+        {
+            if (line == "\r")
+                break; // End of HTTP response headers
+
+            // Process response headers if needed
+        }
+    }
+
+    if (http_response_code > 0)
+    {
+        // Serial.print("HTTP Response code: ");
+        // Serial.println(http_response_code);
+
+        // Read the response body
+        while (wifi_client.available())
+        {
+            payload = wifi_client.readString();
+        }
+    }
+    else
+    {
+        Serial.print("Error code: ");
+        Serial.println(http_response_code);
+    }
+
+    // Disconnect
+    wifi_client.stop();
+
+    // Parse JSON response
+    DynamicJsonDocument doc(400);
+    auto error = deserializeJson(doc, payload);
+    if (error)
+    {
+        Serial.print("JSON parsing error: ");
+        Serial.println(error.c_str());
+        return;
+    }
+
+    // Access the JSON data
+    double daily_pump_kwh = doc["data"]["daily"]["_sum"]["pump_kwh"].as<double>();
+    double daily_resistance_kwh = doc["data"]["daily"]["_sum"]["resistance_kwh"].as<double>();
+    double monthly_pump_kwh = doc["data"]["monthly"]["_sum"]["pump_kwh"].as<double>();
+    double monthly_resistance_kwh = doc["data"]["monthly"]["_sum"]["resistance_kwh"].as<double>();
+
+    state->daily_pump_kwh = daily_pump_kwh;
+    state->daily_resistance_kwh = daily_resistance_kwh;
+    state->monthly_pump_kwh = monthly_pump_kwh;
+    state->monthly_resistance_kwh = monthly_resistance_kwh;
+
+    consumption_data = true;
 }
 
 void Network::loop(State *state)
@@ -248,6 +355,7 @@ void Network::loop(State *state)
 
     get_time();
     now = time(nullptr);
+    get_consumption_data();
 
     publish_messages();
 

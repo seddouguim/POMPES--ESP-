@@ -22,10 +22,22 @@ Term V_40_TERMS[] = {
     Term("Term 2", Duration{0, 30, 0}, Actions{.pump = ON, .resistance = ON}, 'B'), // We send a 'B' to the UNO
 };
 
+// These terms are used to test for the correct energy consumption calculations
+// The pump and resistance are turned on for 1 minute each.
+// The theoretical energy consumption for 1 min are:
+// "pumpEnergy": 0.0003333333333333333, "resistanceEnergy": 0.05
+Term ENERGY_TESTING_TERMS[] = {
+    Term("Term 1", Duration{0, 0, 30}, Actions{.pump = ON, .resistance = OFF}),
+    Term("Term 2", Duration{0, 0, 30}, Actions{.pump = OFF, .resistance = ON}),
+    Term("Term 3", Duration{0, 0, 30}, Actions{.pump = ON, .resistance = OFF}),
+    Term("Term 4", Duration{0, 0, 30}, Actions{.pump = OFF, .resistance = ON}),
+};
+
 Cycle cycles[] = {
     Cycle("IDLING", 3, IDLING_TERMS, true), // We set the start condition to true (WARMING UP)
     Cycle("DRAINING", 2, DRAINING_TERMS),
-    Cycle("V40", 2, V_40_TERMS),
+    Cycle("V_40", 2, V_40_TERMS),
+    // Cycle("ENERGY_TESTING", 4, ENERGY_TESTING_TERMS, false),
 };
 
 //----------------------------------------------------------
@@ -40,7 +52,7 @@ Cycle user_cycles[] = {
 };
 
 Manager CycleManager =
-    PROGRAM_MODE == USER ? Manager(1, user_cycles) : Manager(3, cycles);
+    PROGRAM_MODE == USER ? Manager(1, user_cycles) : Manager(1, cycles);
 
 void setup()
 {

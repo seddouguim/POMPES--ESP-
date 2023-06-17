@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
 #include <WiFiClientSecure.h>
+#include <ESP8266HTTPClient.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <time.h>
@@ -35,8 +36,12 @@ private:
     void connect_wifi();
     void connect_mqtt();
 
+    void get_consumption_data();
+    bool consumption_data;
+
     // Network Related
     WiFiClientSecure wifi_client;
+    HTTPClient http_client;
     PubSubClient mqtt_client;
 
     BearSSL::X509List cert;

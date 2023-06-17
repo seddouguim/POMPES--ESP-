@@ -30,6 +30,10 @@ void Term::init()
     // We compute the term's end time
     end_time = millis() + duration;
 
+    // We set up the timers
+    timer = DEBUG ? duration * DEBUG_RATIO : duration;
+    s_timer = duration;
+
     sent_tx_char = false;
 }
 

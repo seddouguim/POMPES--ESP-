@@ -24,7 +24,8 @@ void Event::update_duration()
 
     // Serial.print("Event duration: " + String(duration));
 
-    duration -= 1000;
+    timer -= 1000;
+    s_timer -= 1000;
 
     last_duration_update = millis();
 }
@@ -32,6 +33,16 @@ void Event::update_duration()
 unsigned long Event::get_duration()
 {
     return duration;
+}
+
+unsigned long Event::get_timer()
+{
+    return timer;
+}
+
+unsigned long Event::get_s_timer()
+{
+    return s_timer;
 }
 
 Buzzer Event::buzzer = Buzzer();

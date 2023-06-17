@@ -14,7 +14,8 @@ public:
 
     EventStatus run(State *state);
     String get_term_name();
-    unsigned long get_term_duration();
+    unsigned long get_term_timer();
+    unsigned long get_term_s_timer();
 
 private:
     Term *terms;

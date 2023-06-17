@@ -24,6 +24,10 @@ void Cycle::init()
         duration += terms[i].duration;
     }
 
+    // We set up the timers
+    timer = DEBUG ? duration * DEBUG_RATIO : duration;
+    s_timer = duration;
+
     // Play a beep to indicate that the cycle starts
     buzzer.play(CYCLE_BEEP_AMOUNT);
 }
@@ -48,9 +52,14 @@ String Cycle::get_term_name()
     return terms[current_term].get_name();
 }
 
-unsigned long Cycle::get_term_duration()
+unsigned long Cycle::get_term_timer()
 {
-    return terms[current_term].get_duration();
+    return terms[current_term].get_timer();
+}
+
+unsigned long Cycle::get_term_s_timer()
+{
+    return terms[current_term].get_s_timer();
 }
 
 EventStatus Cycle::verify_start_condition()
@@ -84,8 +93,8 @@ void Cycle::update_state()
     this->state->current_cycle = this->get_name();
     this->state->current_term = this->get_term_name();
 
-    this->state->current_cycle_duration = this->get_duration();
-    this->state->current_term_duration = this->get_term_duration();
+    this->state->current_cycle_duration = this->get_timer();
+    this->state->current_term_duration = this->get_term_timer();
 }
 
 EventStatus Cycle::run(State *state)

@@ -38,14 +38,16 @@ private:
     bool previous_pump_state;
 
     // Variables to keep track of the time the pump and the resistance have been on
-    unsigned long pump_on_time_total;
-    unsigned long resistance_on_time_total;
-
     unsigned long pump_start_timer;
     unsigned long resistance_start_timer;
 
-    float pump_kwh;
-    float resistance_kwh;
+    double pump_kwh;
+    double resistance_kwh;
+
+    double daily_pump_kwh;
+    double daily_resistance_kwh;
+    double monthly_pump_kwh;
+    double monthly_resistance_kwh;
 
     String current_cycle;
     String current_term;

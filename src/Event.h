@@ -10,10 +10,15 @@ public:
     Event(String name, Duration duration);
     String get_name();
     unsigned long get_duration();
+    unsigned long get_timer();
+    unsigned long get_s_timer();
 
 private:
     String name;
     unsigned long duration;
+    unsigned long timer;
+    unsigned long s_timer;
+
     EventStatus status;
 
     virtual void init();

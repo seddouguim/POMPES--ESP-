@@ -13,7 +13,7 @@
 
 //? DEBUG
 #define DEBUG true
-#define DEBUG_RATIO 75
+#define DEBUG_RATIO 360
 #define DEV false
 
 //? NETWORK
@@ -51,7 +51,7 @@ extern float PUMP_CONSUMPTION;
 #define NEXTION_END_STRING "\xff\xff\xff"
 
 //? UNO TX
-#define UNO_TX Serial1 // TX: D4, No RX => connected to the UNO RX (10) pin
+#define UNO_TX Serial1 // TX: D4, No RX => connected to the UNO RX (10) pin (or pin D5 for the NANO)
 
 //* COLORS
 #define GREEN 1153
