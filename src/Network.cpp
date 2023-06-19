@@ -118,7 +118,7 @@ void Network::connect_wifi()
     WiFi.begin(this->WIFI_ssid, this->WIFI_password);
 
     // Wait for connection or timeout
-    while (WiFi.status() != WL_CONNECTED && millis() - start_time < CONNECTION_TIMEOUT)
+    while (WiFi.status() != WL_CONNECTED && (millis() - start_time) < CONNECTION_TIMEOUT)
         delay(500);
 
     // If we're still not connected, we display an error message
@@ -253,7 +253,6 @@ void Network::get_consumption_data()
     if (!wifi_client.connect(host, httpsPort))
     {
         Serial.println("Failed to connect to API");
-        consumption_data = true;
         return;
     }
 
@@ -308,6 +307,9 @@ void Network::get_consumption_data()
     // Disconnect
     wifi_client.stop();
 
+    Serial.print("Payload: ");
+    Serial.println(payload);
+
     // Parse JSON response
     DynamicJsonDocument doc(400);
     auto error = deserializeJson(doc, payload);
@@ -319,10 +321,15 @@ void Network::get_consumption_data()
     }
 
     // Access the JSON data
-    double daily_pump_kwh = doc["data"]["daily"]["_sum"]["pump_kwh"].as<double>();
-    double daily_resistance_kwh = doc["data"]["daily"]["_sum"]["resistance_kwh"].as<double>();
-    double monthly_pump_kwh = doc["data"]["monthly"]["_sum"]["pump_kwh"].as<double>();
-    double monthly_resistance_kwh = doc["data"]["monthly"]["_sum"]["resistance_kwh"].as<double>();
+    double daily_pump_kwh = doc["data"]["daily"]["pump_kwh"].as<double>();
+    double daily_resistance_kwh = doc["data"]["daily"]["resistance_kwh"].as<double>();
+    double monthly_pump_kwh = doc["data"]["monthly"]["pump_kwh"].as<double>();
+    double monthly_resistance_kwh = doc["data"]["monthly"]["resistance_kwh"].as<double>();
+
+    // Serial.println("Daily pump kWh: " + String(daily_pump_kwh, 6));
+    // Serial.println("Daily resistance kWh: " + String(daily_resistance_kwh, 6));
+    // Serial.println("Monthly pump kWh: " + String(monthly_pump_kwh, 6));
+    // Serial.println("Monthly resistance kWh: " + String(monthly_resistance_kwh, 6));
 
     state->daily_pump_kwh = daily_pump_kwh;
     state->daily_resistance_kwh = daily_resistance_kwh;
