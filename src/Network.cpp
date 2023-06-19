@@ -261,48 +261,17 @@ void Network::get_consumption_data()
                       "Host: " + host + "\r\n" +
                       "Connection: close\r\n\r\n");
 
-    // Read and parse response
-    String payload = "{}";
-    bool http_response_started = false;
-    int http_response_code = -1;
-
+    // Read and skip response headers
     while (wifi_client.connected())
     {
         String line = wifi_client.readStringUntil('\n');
 
-        if (!http_response_started)
-        {
-            if (line.startsWith("HTTP/1.1"))
-            {
-                http_response_started = true;
-                http_response_code = line.substring(9, 12).toInt();
-            }
-        }
-        else
-        {
-            if (line == "\r")
-                break; // End of HTTP response headers
-
-            // Process response headers if needed
-        }
+        if (line == "\r")
+            break; // End of HTTP response headers
     }
 
-    if (http_response_code > 0)
-    {
-        // Serial.print("HTTP Response code: ");
-        // Serial.println(http_response_code);
-
-        // Read the response body
-        while (wifi_client.available())
-        {
-            payload = wifi_client.readString();
-        }
-    }
-    else
-    {
-        Serial.print("Error code: ");
-        Serial.println(http_response_code);
-    }
+    // Read the response body
+    String payload = wifi_client.readString();
 
     // Disconnect
     wifi_client.stop();
@@ -325,11 +294,6 @@ void Network::get_consumption_data()
     double daily_resistance_kwh = doc["data"]["daily"]["resistance_kwh"].as<double>();
     double monthly_pump_kwh = doc["data"]["monthly"]["pump_kwh"].as<double>();
     double monthly_resistance_kwh = doc["data"]["monthly"]["resistance_kwh"].as<double>();
-
-    // Serial.println("Daily pump kWh: " + String(daily_pump_kwh, 6));
-    // Serial.println("Daily resistance kWh: " + String(daily_resistance_kwh, 6));
-    // Serial.println("Monthly pump kWh: " + String(monthly_pump_kwh, 6));
-    // Serial.println("Monthly resistance kWh: " + String(monthly_resistance_kwh, 6));
 
     state->daily_pump_kwh = daily_pump_kwh;
     state->daily_resistance_kwh = daily_resistance_kwh;
