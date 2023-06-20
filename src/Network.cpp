@@ -246,6 +246,10 @@ void Network::get_consumption_data()
     if (consumption_data)
         return;
 
+    consumption_data = true;
+
+    WiFiClientSecure wifi_client;
+
     const char *host = "auth.daguok88djgu8.amplifyapp.com";
     const int httpsPort = 443;
     const char *endpoint = "/api/db/power";
@@ -273,11 +277,10 @@ void Network::get_consumption_data()
     // Read the response body
     String payload = wifi_client.readString();
 
+    Serial.println(payload);
+
     // Disconnect
     wifi_client.stop();
-
-    Serial.print("Payload: ");
-    Serial.println(payload);
 
     // Parse JSON response
     DynamicJsonDocument doc(400);
@@ -299,8 +302,6 @@ void Network::get_consumption_data()
     state->daily_resistance_kwh = daily_resistance_kwh;
     state->monthly_pump_kwh = monthly_pump_kwh;
     state->monthly_resistance_kwh = monthly_resistance_kwh;
-
-    consumption_data = true;
 }
 
 void Network::loop(State *state)
