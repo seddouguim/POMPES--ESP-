@@ -52,7 +52,7 @@ Cycle user_cycles[] = {
 };
 
 Manager CycleManager =
-    PROGRAM_MODE == USER ? Manager(1, user_cycles) : Manager(1, cycles);
+    PROGRAM_MODE == USER ? Manager(1, user_cycles) : Manager(3, cycles);
 
 void setup()
 {

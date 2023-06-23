@@ -19,6 +19,7 @@ public:
 
     void save_wifi_credentials(String ssid, String password);
     void clear_wifi_credentials();
+    void get_consumption_data();
 
 private:
     bool initialized;
@@ -36,14 +37,9 @@ private:
     void connect_wifi();
     bool reconnect_mqtt();
 
-    void check_connections();
-    void check_wifi_connection();
     void check_mqtt_connection();
 
     unsigned long last_mqtt_reconnect_attempt;
-
-    bool consumption_data;
-    get_consumption_data();
 
     // Network Related
     WiFiClientSecure wifi_client;
@@ -71,6 +67,7 @@ private:
     unsigned long last_database_publish_time;
 
     // TIME RELATED
+    bool time_synchronized;
     void synchronize_time();
 };
 

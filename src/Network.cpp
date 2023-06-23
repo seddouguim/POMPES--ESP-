@@ -17,6 +17,9 @@ Network::Network()
     // WIFI_ssid = "UPC2703909";
     // WIFI_password = "nxkVF7ksvt8j";
 
+    // WIFI_ssid = "Mehdi's Trap Phone";
+    // WIFI_password = "12345678";
+
     THING_NAME = "ESP01";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";
 
@@ -25,7 +28,67 @@ Network::Network()
     last_live_publish_time = 0ul;
     last_database_publish_time = 0ul;
 
-    consumption_data = false;
+    time_synchronized = false;
+}
+
+void Network::synchronize_time()
+{
+    static unsigned long start_time = 0;
+    static bool synchronization_in_progress = false;
+
+    if (!synchronization_in_progress)
+    {
+        start_time = millis();
+        configTime(TIMEZONE * 3600, 0 * 3600, "pool.ntp.org", "time.nist.gov");
+        synchronization_in_progress = true;
+    }
+
+    if (millis() - start_time < TIME_SYNC_TIMEOUT)
+    {
+        if (time(nullptr) > 0)
+        {
+            synchronization_in_progress = false;
+            // Serial.println("Synchronized time: " + String(time(nullptr)));
+            time_synchronized = true;
+        }
+    }
+    else
+    {
+        // Time synchronization failed
+        synchronization_in_progress = false;
+        // Handle the error or retry the synchronization
+    }
+}
+
+void WiFiEvent(WiFiEvent_t event)
+{
+    // Serial.printf("[WiFi-event] event: %d\n", event);
+
+    static bool previous_wifi_status = false;
+
+    if (event == WIFI_EVENT_STAMODE_GOT_IP)
+    {
+        Message wifi_connected_message{"WiFi connected!", 1};
+        Display::add_message(wifi_connected_message);
+
+        // Update WiFi icon
+        Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
+
+        previous_wifi_status = true;
+
+        // Serial.println("WiFi connected");
+    }
+    else if (event == WIFI_EVENT_STAMODE_DISCONNECTED && previous_wifi_status)
+    {
+        Message wifi_disconnected_message{"WiFi disconnected...", 1};
+        Display::add_message(wifi_disconnected_message);
+
+        // Update WiFi icon
+        Display::update_display("main.wifi.pic=" + String(WIFI_DISCONNECTED_PIC));
+        // Serial.println("WiFi disconnected");
+
+        previous_wifi_status = false;
+    }
 }
 
 void Network::init()
@@ -41,6 +104,8 @@ void Network::init()
 
     AWS_IOT_PUBLISH_TOPIC = "dt/sensors/" + String(state->CUID);
     AWS_IOT_SUBSCRIBE_TOPIC = "dt/sensors/" + String(state->CUID) + "/sub";
+
+    WiFi.onEvent(WiFiEvent);
 
     get_wifi_credentials();
     initialized = true;
@@ -93,9 +158,11 @@ void Network::clear_wifi_credentials()
     connection_attempts = 0;
 }
 
-void Network::check_wifi_connection() {}
 void Network::check_mqtt_connection()
 {
+    if (!WiFi.isConnected())
+        return;
+
     if (!mqtt_client.connected())
     {
         long now = millis();
@@ -119,94 +186,53 @@ void Network::check_mqtt_connection()
     }
 }
 
-void Network::check_connections()
-{
-    check_wifi_connection();
-    check_mqtt_connection();
-
-    int wifi_status = WiFi.status();
-    int mqtt_status = mqtt_client.state();
-
-    if ((wifi_status) != WL_CONNECTED)
-    {
-        connect_wifi();
-        return;
-    }
-
-    else if ((wifi_status) != WL_CONNECTED)
-    {
-    }
-}
-
 void Network::connect_wifi()
 {
+    static bool connectionAttempted = false; // Flag to track connection attempt
+
     // Check if we're already connected to WiFi or if we have already attempted connection
-    if (WiFi.status() == WL_CONNECTED)
+    if (WiFi.status() == WL_CONNECTED || connectionAttempted)
         return;
 
     // Update WiFi icon
     Display::update_display("main.wifi.pic=" + String(WIFI_DISCONNECTED_PIC));
 
     // Send temporary message to display
-    Message connection_message{"Connecting to WiFi...", 1};
+    Message connection_message{"Connecting to WiFi...", 2};
     Display::add_message(connection_message);
 
     // Start WiFi connection in the background
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_ssid.c_str(), WIFI_password.c_str());
 
-    // Set a callback function to handle the WiFi connection status
-    WiFi.onEvent([this](WiFiEvent_t event, WiFiEventInfo_t info)
-                 { handle_wifi_event(event, info); });
-
     // Reset the connection attempts count
     connection_attempts = 0;
-}
 
-void Network::handle_wifi_event(WiFiEvent_t event, WiFiEventInfo_t info)
-{
-    if (event == SYSTEM_EVENT_STA_CONNECTED)
-    {
-        // Connected to WiFi
-        Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
-        Message connected_message{"Connected to WiFi!", 0};
-        Display::add_message(connected_message);
-    }
-    else if (event == SYSTEM_EVENT_STA_DISCONNECTED)
-    {
-        // Failed to connect to WiFi
-        if (connection_attempts < WIFI_CONNECTION_ATTEMPTS)
-        {
-            // Retry connection
-            connection_attempts++;
-            WiFi.reconnect();
-        }
-        else
-        {
-            // Max connection attempts reached, show error message
-            Message error_message{"Error connecting to WiFi!", 0};
-            Display::add_message(error_message);
-        }
-    }
+    connectionAttempted = true; // Set the flag to indicate connection attempt
 }
 
 bool Network::reconnect_mqtt()
 {
+
     // Connect to MQTT
-    if (mqtt_client.connect(THING_NAME.c_str());)
+    if (mqtt_client.connect(THING_NAME.c_str()))
     {
         // Display success message
         Message connected_message{"Connected to AWS!", 1};
         Display::add_message(connected_message);
+
+        // Serial.println("Connected to AWS");
     }
     else
     {
         // Display error message
         Message error_message{"Error connecting to AWS!", 1};
         Display::add_message(error_message);
+
+        // Serial.println("Error connecting to AWS...");
     }
 
-    return client.connected();
+    return mqtt_client.connected();
 }
 
 void Network::publish_messages()
@@ -265,31 +291,18 @@ void Network::publish_database_message()
     }
 }
 
-void Network::synchronize_time()
-{
-    configTime(TIME_ZONE * 3600, 0 * 3600, "pool.ntp.org", "time.nist.gov");
-
-    // Wait for time synchronization or timeout
-    unsigned long start_time = millis();
-    while (millis() - start_time < TIME_SYNC_TIMEOUT)
-    {
-        if (time(nullptr) > 0)
-            return;
-        delay(100);
-    }
-
-    // Time synchronization failed
-    // Handle the error or retry the synchronization
-}
-
 void Network::get_consumption_data()
 {
-    if (consumption_data)
+    static bool consumption_data_received = false;
+
+    if (consumption_data_received)
         return;
 
-    consumption_data = true;
+    consumption_data_received = true;
 
     WiFiClientSecure wifi_client;
+
+    wifi_client.setInsecure();
 
     const char *host = "auth.daguok88djgu8.amplifyapp.com";
     const int httpsPort = 443;
@@ -318,7 +331,7 @@ void Network::get_consumption_data()
     // Read the response body
     String payload = wifi_client.readString();
 
-    Serial.println(payload);
+    // Serial.println(payload);
 
     // Disconnect
     wifi_client.stop();
@@ -361,14 +374,15 @@ void Network::loop(State *state)
 
     connect_wifi();
 
-    // Check if we're connected to WiFi
-    // If we're not, we return
     if (WiFi.status() != WL_CONNECTED)
         return;
 
+    if (!time_synchronized)
+    {
+        synchronize_time();
+        return;
+    }
+
+    check_mqtt_connection();
     get_consumption_data();
-
-    publish_messages();
-
-    mqtt_client.loop();
 }
