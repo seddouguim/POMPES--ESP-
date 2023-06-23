@@ -6,7 +6,7 @@
 .vscode
 
 
-secrets.h
+src/secrets.h
 
 node_modules/
 *.zip
