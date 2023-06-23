@@ -34,10 +34,16 @@ private:
 
     void get_wifi_credentials();
     void connect_wifi();
-    void connect_mqtt();
+    bool reconnect_mqtt();
 
-    void get_consumption_data();
+    void check_connections();
+    void check_wifi_connection();
+    void check_mqtt_connection();
+
+    unsigned long last_mqtt_reconnect_attempt;
+
     bool consumption_data;
+    get_consumption_data();
 
     // Network Related
     WiFiClientSecure wifi_client;
@@ -65,10 +71,7 @@ private:
     unsigned long last_database_publish_time;
 
     // TIME RELATED
-    time_t now;
-    time_t nowish;
-    int TIME_ZONE;
-    void get_time(void);
+    void synchronize_time();
 };
 
 #endif /* SRC_NETWORK */

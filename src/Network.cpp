@@ -8,6 +8,8 @@ Network::Network()
 
     WIFI_ssid = "";
     WIFI_password = "";
+    connection_attempts = 0;
+    last_mqtt_reconnect_attempt = 0ul;
 
     // WIFI_ssid = "UPC3404214";
     // WIFI_password = "Y66aedjtudhw";
@@ -15,16 +17,10 @@ Network::Network()
     // WIFI_ssid = "UPC2703909";
     // WIFI_password = "nxkVF7ksvt8j";
 
-    connection_attempts = 0;
-
     THING_NAME = "ESP01";
     MQTT_HOST = "a2bc1rtj36q5u9-ats.iot.us-east-1.amazonaws.com";
 
     SHADOW_UPDATE_TOPIC = "$aws/things/" + THING_NAME + "/shadow/update";
-
-    now = 0;
-    nowish = 1510592825;
-    TIME_ZONE = -5;
 
     last_live_publish_time = 0ul;
     last_database_publish_time = 0ul;
@@ -97,78 +93,124 @@ void Network::clear_wifi_credentials()
     connection_attempts = 0;
 }
 
+void Network::check_wifi_connection() {}
+void Network::check_mqtt_connection()
+{
+    if (!mqtt_client.connected())
+    {
+        long now = millis();
+        if (now - last_mqtt_reconnect_attempt > 10000)
+        {
+            last_mqtt_reconnect_attempt = now;
+            // Attempt to reconnect
+            if (reconnect_mqtt())
+            {
+                last_mqtt_reconnect_attempt = 0ul;
+            }
+        }
+    }
+    else
+    {
+        // Client connected
+        mqtt_client.loop();
+
+        // Publish messages
+        publish_messages();
+    }
+}
+
+void Network::check_connections()
+{
+    check_wifi_connection();
+    check_mqtt_connection();
+
+    int wifi_status = WiFi.status();
+    int mqtt_status = mqtt_client.state();
+
+    if ((wifi_status) != WL_CONNECTED)
+    {
+        connect_wifi();
+        return;
+    }
+
+    else if ((wifi_status) != WL_CONNECTED)
+    {
+    }
+}
+
 void Network::connect_wifi()
 {
-    // Check if we're connected to WiFi already or if we're already trying to connect
-    if (WiFi.status() == WL_CONNECTED || connection_attempts > 0)
+    // Check if we're already connected to WiFi or if we have already attempted connection
+    if (WiFi.status() == WL_CONNECTED)
         return;
-
-    // Send temporary message to display
-    Message connection_message{"Connecting to WiFi and AWS...", 0};
-    Display::add_message(connection_message);
 
     // Update WiFi icon
     Display::update_display("main.wifi.pic=" + String(WIFI_DISCONNECTED_PIC));
 
-    connection_attempts++;
-    unsigned long start_time = millis();
+    // Send temporary message to display
+    Message connection_message{"Connecting to WiFi...", 1};
+    Display::add_message(connection_message);
 
-    // If we're not connected, we try to connect
+    // Start WiFi connection in the background
     WiFi.mode(WIFI_STA);
-    WiFi.begin(this->WIFI_ssid, this->WIFI_password);
+    WiFi.begin(WIFI_ssid.c_str(), WIFI_password.c_str());
 
-    // Wait for connection or timeout
-    while (WiFi.status() != WL_CONNECTED && (millis() - start_time) < CONNECTION_TIMEOUT)
-        delay(500);
+    // Set a callback function to handle the WiFi connection status
+    WiFi.onEvent([this](WiFiEvent_t event, WiFiEventInfo_t info)
+                 { handle_wifi_event(event, info); });
 
-    // If we're still not connected, we display an error message
-    if (WiFi.status() != WL_CONNECTED)
-    {
-        Message error_message{"Error connecting to WiFi!", 0};
-        Display::add_message(error_message);
-
-        return;
-    }
-
+    // Reset the connection attempts count
     connection_attempts = 0;
-    Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
-
-    Message connected_message{"Connected to WiFi!", 0};
-    Display::add_message(connected_message);
 }
 
-void Network::connect_mqtt()
+void Network::handle_wifi_event(WiFiEvent_t event, WiFiEventInfo_t info)
 {
-    // Check if we're connected to MQTT already
-    if (mqtt_client.connected())
-        return;
-
-    unsigned long start_time = millis();
-
-    // Wait for connection or timeout
-    while (!mqtt_client.connect(THING_NAME.c_str()) && millis() - start_time < CONNECTION_TIMEOUT)
-        delay(500);
-
-    // AWS connection timeout, display error message
-    if (!mqtt_client.connected())
+    if (event == SYSTEM_EVENT_STA_CONNECTED)
     {
-        Message error_message{"Error connecting to AWS!", 0};
-        Display::add_message(error_message);
+        // Connected to WiFi
+        Display::update_display("main.wifi.pic=" + String(WIFI_CONNECTED_PIC));
+        Message connected_message{"Connected to WiFi!", 0};
+        Display::add_message(connected_message);
+    }
+    else if (event == SYSTEM_EVENT_STA_DISCONNECTED)
+    {
+        // Failed to connect to WiFi
+        if (connection_attempts < WIFI_CONNECTION_ATTEMPTS)
+        {
+            // Retry connection
+            connection_attempts++;
+            WiFi.reconnect();
+        }
+        else
+        {
+            // Max connection attempts reached, show error message
+            Message error_message{"Error connecting to WiFi!", 0};
+            Display::add_message(error_message);
+        }
+    }
+}
 
-        return;
+bool Network::reconnect_mqtt()
+{
+    // Connect to MQTT
+    if (mqtt_client.connect(THING_NAME.c_str());)
+    {
+        // Display success message
+        Message connected_message{"Connected to AWS!", 1};
+        Display::add_message(connected_message);
+    }
+    else
+    {
+        // Display error message
+        Message error_message{"Error connecting to AWS!", 1};
+        Display::add_message(error_message);
     }
 
-    Message connected_message{"Connected to AWS!", 0};
-    Display::add_message(connected_message);
-
-    // Subscribe to a topic
-    // mqtt_client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC.c_str());
+    return client.connected();
 }
 
 void Network::publish_messages()
 {
-    connect_mqtt();
-
     publish_live_data_message();
     publish_database_message();
 }
@@ -223,22 +265,21 @@ void Network::publish_database_message()
     }
 }
 
-void Network::get_time(void)
+void Network::synchronize_time()
 {
-    if (now != 0)
-        return;
-
     configTime(TIME_ZONE * 3600, 0 * 3600, "pool.ntp.org", "time.nist.gov");
-    now = time(nullptr);
 
-    while (now < nowish)
+    // Wait for time synchronization or timeout
+    unsigned long start_time = millis();
+    while (millis() - start_time < TIME_SYNC_TIMEOUT)
     {
-        delay(500);
-        now = time(nullptr);
+        if (time(nullptr) > 0)
+            return;
+        delay(100);
     }
 
-    struct tm timeinfo;
-    gmtime_r(&now, &timeinfo);
+    // Time synchronization failed
+    // Handle the error or retry the synchronization
 }
 
 void Network::get_consumption_data()
@@ -325,8 +366,6 @@ void Network::loop(State *state)
     if (WiFi.status() != WL_CONNECTED)
         return;
 
-    get_time();
-    now = time(nullptr);
     get_consumption_data();
 
     publish_messages();
