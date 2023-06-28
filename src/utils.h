@@ -113,7 +113,15 @@ enum EventStatus
     TERMINATED,
 };
 
-Page get_page(String page);
+enum Cycles
+{
+    IDLING = 0,
+    DRAINING,
+    V_40
+}
+
+Page
+get_page(String page);
 Command get_command(String command);
 
 #endif /* SRC_UTILS */

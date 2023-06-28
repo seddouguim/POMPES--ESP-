@@ -32,7 +32,8 @@ void Manager::init()
     if (initialized)
         return;
 
-    current_cycle = 0;
+    // CYCLES: IDLING, DRAINING, V_40
+    current_cycle = IDLING;
 
     Display::manager = this;
     initialized = true;
