@@ -61,6 +61,7 @@ private:
     void resistance_kw();
 
     void init();
+    float get_calibrated_temperature();
 
     friend class Cycle;
     friend class Manager;

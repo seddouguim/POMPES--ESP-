@@ -3,11 +3,11 @@
 #include "Display.h"
 
 Cycle::Cycle(String name, size_t num_terms, Term *terms)
-    : Event(name, Duration(0)), terms(terms), num_terms(num_terms), current_term(0),
+    : Event(name, Duration(0)), terms(terms), num_terms(num_terms), current_term(START_TERM),
       state(nullptr), handler(ActionHandler()), start_condition(false) {}
 
 Cycle::Cycle(String name, size_t num_terms, Term *terms, bool start_condition)
-    : Event(name, Duration(0)), terms(terms), num_terms(num_terms), current_term(0),
+    : Event(name, Duration(0)), terms(terms), num_terms(num_terms), current_term(START_TERM),
       state(nullptr), handler(ActionHandler()), start_condition(start_condition) {}
 
 bool Cycle::is_running()
@@ -17,9 +17,9 @@ bool Cycle::is_running()
 
 void Cycle::init()
 {
-    // Compute the duration of the cycle
-    // Duration is the sum of the durations of the terms
-    for (size_t i = 0; i < num_terms; i++)
+    //  Compute the duration of the cycle
+    //  Duration is the sum of the durations of the terms
+    for (size_t i = START_TERM; i < num_terms; i++)
     {
         duration += terms[i].duration;
     }

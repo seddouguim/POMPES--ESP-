@@ -120,6 +120,14 @@ enum Cycles
     V_40
 };
 
+enum Terms
+{
+    TERM1 = 0,
+    TERM2,
+    TERM3,
+    TERM4,
+};
+
 Page get_page(String page);
 Command get_command(String command);
 
