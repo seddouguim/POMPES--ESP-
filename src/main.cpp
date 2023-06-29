@@ -35,8 +35,8 @@ Term ENERGY_TESTING_TERMS[] = {
 
 Cycle cycles[] = {
     Cycle("IDLING", 3, IDLING_TERMS, true), // We set the start condition to true (WARMING UP)
-    Cycle("DRAINING", 2, DRAINING_TERMS),
-    Cycle("V_40", 2, V_40_TERMS),
+    Cycle("DRAINING", 2, DRAINING_TERMS, false),
+    Cycle("V_40", 2, V_40_TERMS, false),
     // Cycle("ENERGY_TESTING", 4, ENERGY_TESTING_TERMS, false),
 };
 
