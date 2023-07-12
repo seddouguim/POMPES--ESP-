@@ -62,6 +62,7 @@ private:
 
     void init();
     float get_calibrated_temperature();
+    bool is_outlier(float value, float mean, float threshold, float tolerance);
 
     friend class Cycle;
     friend class Manager;
