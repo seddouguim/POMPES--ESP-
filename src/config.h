@@ -11,7 +11,8 @@
 
 #define PROGRAM_MODE BENCH
 
-// Choose which cycle and term to start with (Note: the program will start WARMING UP for any of the chosen start cycles)
+// Choose which cycle and term to start with
+// (Note: the program will start WARMING UP for any of the chosen start cycles)
 // Cycles: "IDLING", "DRAINING", "V_40"
 // TERMS: TERM1, TERM2,TERM3 etc...
 
