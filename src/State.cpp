@@ -137,28 +137,29 @@ void State::update()
     last_update = millis();
 
     previous_temperature = current_temperature;
+    current_temperature = Thermocouple_max31855.readCelsius();
 
     // Read the temperature multiple times and calculate the average
     static const int numReadings = 10; // Number of readings to average
 
-    // Outlier rejection parameters
-    static const float threshold = 2.0; // Maximum allowable difference from mean temperature
-    static const float tolerance = 0.1; // Maximum allowable percentage difference from mean temperature
-    float sum = 0.0;
-    for (int i = 0; i < numReadings; i++)
-    {
-        float temperature = get_calibrated_temperature();
-        sum += temperature;
-        delay(10); // Add a small delay between readings to stabilize the sensor
-    }
-    current_temperature = sum / numReadings;
+    // // Outlier rejection parameters
+    // static const float threshold = 2.0; // Maximum allowable difference from mean temperature
+    // static const float tolerance = 0.1; // Maximum allowable percentage difference from mean temperature
+    // float sum = 0.0;
+    // for (int i = 0; i < numReadings; i++)
+    // {
+    //     float temperature = get_calibrated_temperature();
+    //     sum += temperature;
+    //     delay(10); // Add a small delay between readings to stabilize the sensor
+    // }
+    // current_temperature = sum / numReadings;
 
-    if (is_outlier(current_temperature, previous_temperature, threshold, tolerance))
-    {
-        // Serial.println(F("Outlier: "));
-        // Serial.println(current_temperature);
-        current_temperature = previous_temperature;
-    }
+    // if (is_outlier(current_temperature, previous_temperature, threshold, tolerance))
+    // {
+    //     // Serial.println(F("Outlier: "));
+    //     // Serial.println(current_temperature);
+    //     current_temperature = previous_temperature;
+    // }
 
     previous_resistance_state = resistance_state;
     resistance_state = digitalRead(RESISTANCE_PIN);
