@@ -38,10 +38,8 @@
 #define RESISTANCE_PIN D1
 #define PUMP_PIN D2
 
-//? THERMOCOUPLE PINS
-#define MAX_CLK 14
-#define MAX_CS 0
-#define MAX_MISO 12 // DO
+//? ds18b20 PINS
+#define ds18b20_pin 0
 
 //? TEMPERATURE VARIABLES
 extern float MIN_TEMPERATURE;

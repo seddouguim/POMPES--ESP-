@@ -2,8 +2,8 @@
 #define SRC_STATE
 
 #include <Arduino.h>
-#include "max6675.h"
-#include "Adafruit_MAX31855.h"
+#include <OneWire.h>
+#include <DallasTemperature.h>
 #include <ArduinoJson.h>
 #include "config.h"
 
@@ -20,10 +20,10 @@ public:
     bool get_pump_update();
 
 private:
-    MAX6675 Thermocouple;
-    Adafruit_MAX31855 Thermocouple_max31855;
-
     unsigned long last_update;
+
+    OneWire oneWire;
+    DallasTemperature temperature_sensor;
 
     //* TODO: GET CUID FROM EEPROM
     String CUID = "cuid-01";
@@ -61,8 +61,7 @@ private:
     void resistance_kw();
 
     void init();
-    float get_calibrated_temperature();
-    bool is_outlier(float value, float mean, float threshold, float tolerance);
+    float get_temperature();
 
     friend class Cycle;
     friend class Manager;
