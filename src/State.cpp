@@ -8,7 +8,7 @@ State::State() : oneWire(ds18b20_pin), temperature_sensor(&oneWire)
 void State::init()
 {
     current_temperature = 0;
-    previous_temperature = -1;
+    previous_temperature = 0;
 
     resistance_state = false;
     previous_resistance_state = false;
