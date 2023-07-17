@@ -43,16 +43,7 @@ float State::get_temperature()
     static float temperature = -127.0;
 
     temperature_sensor.requestTemperatures();
-
-    while (temperature == -127.0 && attempts < 10)
-    {
-        temperature = temperature_sensor.getTempCByIndex(0);
-        attempts++;
-    }
-
-    attempts = 0;
-
-    return temperature;
+    return temperature_sensor.getTempCByIndex(0);
 }
 
 void State::update()
