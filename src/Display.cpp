@@ -12,6 +12,8 @@ Display::Display() : initialized(false), last_update(0ul), last_wifi_scan(0ul)
     manager = nullptr;
     message_queue_length = 0;
     message_display_start = -1;
+
+    update_needed = true;
 }
 
 void Display::init()
@@ -138,14 +140,17 @@ void Display::update_pump()
 
 void Display::update_temperature()
 {
+
     // No need to update temperature
-    if (!this->manager->state.get_temperature_update())
+    if (!this->manager->state.get_temperature_update() && update_needed)
     {
         update_display("main.temperature.pco=" + String(GREEN));
         update_display("vis 17,0");
-
+        update_needed = false;
         return;
     }
+
+    update_needed = true;
 
     update_display("main.temperature.txt=\"" + String(this->manager->state.current_temperature, 1) + char(176) + "\"");
 

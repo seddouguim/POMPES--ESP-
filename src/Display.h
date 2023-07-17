@@ -39,6 +39,9 @@ private:
     int ssids_count;
     int current_ssids_page;
 
+    // Temperature
+    bool update_needed;
+
     // COMMANDS
     char input_buffer[INPUT_BUFFER_SIZE];
     void listen_for_commands();

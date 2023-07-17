@@ -1,6 +1,7 @@
 #include "State.h"
 
-State::State() : oneWire(ds18b20_pin), temperature_sensor(&oneWire)
+State::State()
+    : oneWire(ds18b20_pin), temperature_sensor(&oneWire)
 {
     init();
 }
@@ -63,6 +64,9 @@ void State::update()
 
     previous_temperature = current_temperature;
     current_temperature = get_temperature();
+
+    Serial.println("Current temperature: " + String(current_temperature));
+    Serial.println("Previous temperature: " + String(previous_temperature));
 
     previous_resistance_state = resistance_state;
     resistance_state = digitalRead(RESISTANCE_PIN);
