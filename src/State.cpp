@@ -39,7 +39,8 @@ void State::init()
 float State::get_temperature()
 {
     temperature_sensor.requestTemperatures();
-    return temperature_sensor.getTempCByIndex(0);
+    float temperature = temperature_sensor.getTempCByIndex(0);
+    return temperature == DEVICE_DISCONNECTED_C ? previous_temperature : temperature;
 }
 
 void State::update()
