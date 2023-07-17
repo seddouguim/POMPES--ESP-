@@ -39,11 +39,9 @@ void State::init()
 
 float State::get_temperature()
 {
-    static int attempts = 0;
-    static float temperature = -127.0;
-
     temperature_sensor.requestTemperatures();
-    return temperature_sensor.getTempCByIndex(0);
+    float temperature = temperature_sensor.getTempCByIndex(0);
+    return temperature == DEVICE_DISCONNECTED_C ? previous_temperature : temperature;
 }
 
 void State::update()
@@ -55,9 +53,6 @@ void State::update()
 
     previous_temperature = current_temperature;
     current_temperature = get_temperature();
-
-    Serial.println("Current temperature: " + String(current_temperature));
-    Serial.println("Previous temperature: " + String(previous_temperature));
 
     previous_resistance_state = resistance_state;
     resistance_state = digitalRead(RESISTANCE_PIN);

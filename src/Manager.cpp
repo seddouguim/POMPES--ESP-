@@ -47,7 +47,7 @@ void Manager::run()
     state.update();
 
     // We run the display loop
-    // display.loop();
+    display.loop();
 
     // We run the network loop
     network.loop(&state);
